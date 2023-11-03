@@ -1,0 +1,28 @@
+﻿version: "3.8"
+services:
+  db:
+    build:
+      context: ./PostgresDocker/
+    container_name: movie-app-postgresql
+    ports:
+      - 5432:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./
+    container_name: movie-app-backend
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/microsvc-db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+volumes:
+  db:
+    driver: local
