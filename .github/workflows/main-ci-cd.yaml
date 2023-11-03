@@ -43,7 +43,6 @@ jobs:
         run: |
           docker exec movie-app-backend dotnet build
           docker exec movie-app-backend dotnet test
-        working-directory: /app
         env:
           POSTGRES_DB: microsvc-db
           POSTGRES_USER: postgres
