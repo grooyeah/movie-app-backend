@@ -35,8 +35,8 @@ jobs:
           SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
       - name: Build backend project
-         working-directory: ./
-         run: dotnet build movie-app-backend.csproj
+        working-directory: ./
+        run: dotnet build movie-app-backend.csproj
 
       - name: Install Docker Compose
         run: |
