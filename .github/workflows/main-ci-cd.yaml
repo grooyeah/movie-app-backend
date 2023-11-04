@@ -46,9 +46,6 @@ jobs:
       - name: Set up Docker Compose
         run: docker-compose -f docker-compose.yml up -d
 
-      - name: Build PostgreSQL Docker Image
-        run: docker build -t postgres-image ./PostgresDocker/
-
       - name: Build Backend Docker Image
         run: docker build -t backend-image ./
 
