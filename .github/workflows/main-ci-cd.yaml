@@ -15,6 +15,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.x
+         
+      - name: Build And Test Backend .NET Project
+        working-directory: ./
+        run: |
+          dotnet build movie-app-backend.csproj
+          dotnet test movie-app-backend.csproj
+        env:
+          POSTGRES_DB: movie-db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/movie-db
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: postgres
+          SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
       - name: Install Docker Compose
         run: |
           sudo apt-get update
@@ -23,35 +42,13 @@ jobs:
       - name: Set up Docker Compose
         run: docker-compose -f docker-compose.yml up -d
 
-      - name: Build PostgreSQL Docker Image
-        run: docker build -t postgres-image ./PostgresDocker/
-
       - name: Build Backend Docker Image
         run: docker build -t backend-image ./
-
-      - name: Set up .NET SDK
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.x
 
       - name: Build and Run Containers
         run: |
           docker-compose -f docker-compose.yml up --build -d
         working-directory: ./
-
-      - name: Build and Test Backend
-        run: |
-          docker exec movie-app-backend dotnet build
-          docker exec movie-app-backend dotnet test
-        working-directory: /app
-        env:
-          POSTGRES_DB: microsvc-db
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/microsvc-db
-          SPRING_DATASOURCE_USERNAME: postgres
-          SPRING_DATASOURCE_PASSWORD: postgres
-          SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
       - name: Stop and remove Docker Compose services
         run: docker-compose -f docker-compose.yml down
