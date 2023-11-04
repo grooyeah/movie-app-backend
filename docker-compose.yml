@@ -1,18 +1,23 @@
 ﻿version: "3.8"
 services:
   db:
-    build:
-      context: ./PostgresDocker/
-    container_name: movie-app-postgresql
+    image: "postgres:15.2-alpine"
+    restart: always
+    container_name: postgresql-container
     ports:
       - 5432:5432
     volumes:
       - db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=movie-app-db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
 
   backend:
+    image: backend-image
     build:
       context: ./
-    container_name: movie-app-backend
+    container_name: backend-container
     ports:
       - 8080:80
     depends_on:
