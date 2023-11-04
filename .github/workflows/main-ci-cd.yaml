@@ -20,7 +20,7 @@ jobs:
         with:
           dotnet-version: 6.x
          
-      - name: Build and test backend project
+      - name: Build And Test Backend .NET Project
         working-directory: ./
         run: |
           dotnet build movie-app-backend.csproj
@@ -33,10 +33,6 @@ jobs:
           SPRING_DATASOURCE_USERNAME: postgres
           SPRING_DATASOURCE_PASSWORD: postgres
           SPRING_JPA_HIBERNATE_DDL_AUTO: update
-
-      - name: Build backend project
-        working-directory: ./
-        run: dotnet build movie-app-backend.csproj
 
       - name: Install Docker Compose
         run: |
