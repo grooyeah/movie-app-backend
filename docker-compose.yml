@@ -14,19 +14,26 @@ services:
       - POSTGRES_PASSWORD=postgres
 
   backend:
-    image: backend-image
     build:
       context: ./
+    image: backend-image
     container_name: backend-container
     ports:
       - 8080:80
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/microsvc-db
+      - ConnectionStrings:DefaultConnection=Host=db;Port=5432;Database=movie-app-db;Username=postgres;Password=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/movie-app-db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+        interval: 10s
+        timeout: 5s
+        retries: 3
+        start_period: 10s
 
 volumes:
   db:
