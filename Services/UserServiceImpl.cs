@@ -11,38 +11,36 @@ namespace Services
         {
             _userRepository = userRepository;
         }
-        
-        public IEnumerable<User> GetAllUsers()
+
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            return _userRepository.GetAllUsers();
+            return await _userRepository.GetAllUsersAsync();
         }
 
-        public User GetUserById(string userId)
+        public async Task<User> GetUserByIdAsync(string userId)
         {
-            var user = _userRepository.GetUserById(userId);
-            return user;
+            return await _userRepository.GetUserByIdAsync(userId);
         }
 
-        public  void CreateUser(User user)
+        public async Task CreateUserAsync(User user)
         {
-           _userRepository.CreateUser(user);
+            await _userRepository.CreateUserAsync(user);
         }
 
-        public  void UpdateUser(User user)
+        public async Task UpdateUserAsync(User user)
         {
-            var userDb = _userRepository.GetUserById(user.UserId);
-            
-            if (userDb == null)
+            var userDb = await _userRepository.GetUserByIdAsync(user.UserId);
+
+            if (userDb != null)
             {
+                _userRepository.UpdateUserAsync(user);
             }
-            
-            _userRepository.UpdateUser(user);
-           
+            // Handle case where user is not found
         }
 
-        public  void DeleteUser(User user)
+        public async Task DeleteUserAsync(User user)
         {
-            _userRepository.DeleteUser(user);
+            await _userRepository.DeleteUserAsync(user);
         }
     }
 }

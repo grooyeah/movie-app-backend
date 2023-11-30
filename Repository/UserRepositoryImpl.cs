@@ -14,33 +14,32 @@ namespace Repository
             _dbContext = dbContext;
         }
 
-        public  IEnumerable<User> GetAllUsers()
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            return _dbContext.Users.ToList();
+            return await _dbContext.Users.ToListAsync();
         }
 
-        public User GetUserById(string userId)
+        public async Task<User> GetUserByIdAsync(string userId)
         {
-            return _dbContext.Users.FirstOrDefault(u => u.UserId == userId);
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
-        public void CreateUser(User user)
+        public async Task CreateUserAsync(User user)
         {
-            _dbContext.Users.Add(user);
-            _dbContext.SaveChanges();
+            await _dbContext.Users.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public  void UpdateUser(User user)
+        public async Task UpdateUserAsync(User user)
         {
-            // Assuming user is attached to the DbContext
-            _dbContext.Entry(user).State = EntityState.Modified;
-            _dbContext.SaveChanges();
+            _dbContext.Users.Update(user);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public async void DeleteUser(User user)
+        public async Task DeleteUserAsync(User user)
         {
             _dbContext.Users.Remove(user);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

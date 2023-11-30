@@ -4,10 +4,10 @@ namespace Interfaces
 {
     public interface IUserRepository
     {
-        IEnumerable<User> GetAllUsers();
-        User GetUserById(string userId);
-        void CreateUser(User user);
-        void UpdateUser(User user);
-        void DeleteUser(User user);
+        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<User> GetUserByIdAsync(string userId);
+        Task CreateUserAsync(User user);
+        Task UpdateUserAsync(User user);
+        Task DeleteUserAsync(User user);
     }
 }

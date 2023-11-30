@@ -10,31 +10,31 @@ namespace Services
         public ReviewServiceImpl(IReviewRepository reviewRepository)
         {
             _reviewRepository = reviewRepository;
-        }   
-
-        public  void CreateReview(Review review)
-        {
-            _reviewRepository.CreateReview(review);
         }
 
-        public  void DeleteReview(string reviewId)
+        public async Task CreateReviewAsync(Review review)
         {
-            _reviewRepository.DeleteReview(reviewId);
+            await _reviewRepository.CreateReviewAsync(review);
         }
 
-        public  IEnumerable<Review> GetAllReviews()
+        public async Task DeleteReviewAsync(string reviewId)
         {
-            return  _reviewRepository.GetAllReviews();
+            await _reviewRepository.DeleteReviewAsync(reviewId);
         }
 
-        public Review GetReviewById(string reviewId)
+        public async Task<IEnumerable<Review>> GetAllReviewsAsync()
         {
-            return _reviewRepository.GetReviewById(reviewId);   
+            return await _reviewRepository.GetAllReviewsAsync();
         }
 
-        public  void UpdateReview(Review review)
+        public async Task<Review> GetReviewByIdAsync(string reviewId)
         {
-            _reviewRepository.UpdateReview(review);
+            return await _reviewRepository.GetReviewByIdAsync(reviewId);
+        }
+
+        public async Task UpdateReviewAsync(Review review)
+        {
+            await _reviewRepository.UpdateReviewAsync(review);
         }
     }
 }

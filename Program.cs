@@ -1,16 +1,9 @@
 ﻿using Database;
 using Interfaces;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Repository;
 using Services;
-using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +36,6 @@ builder.Services.AddScoped<IProfileRepository, ProfileRepositoryImpl>();
 builder.Services.AddScoped<IUserService, UserServiceImpl>();
 builder.Services.AddScoped<IReviewService, ReviewServiceImpl>();
 builder.Services.AddScoped<IProfileService, ProfileServiceImpl>();
-
 
 // Add logging and other services as needed...
 

@@ -4,10 +4,10 @@ namespace Interfaces
 {
     public interface IReviewService
     {
-        IEnumerable<Review> GetAllReviews();
-        Review GetReviewById(string reviewId);
-        void CreateReview(Review review);
-        void UpdateReview(Review review);
-        void DeleteReview(string reviewId);
+        Task CreateReviewAsync(Review review);
+        Task DeleteReviewAsync(string reviewId);
+        Task<IEnumerable<Review>> GetAllReviewsAsync();
+        Task<Review> GetReviewByIdAsync(string reviewId);
+        Task UpdateReviewAsync(Review review);
     }
 }

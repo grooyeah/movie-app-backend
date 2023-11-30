@@ -1,5 +1,6 @@
 ﻿using Database;
 using Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace Repository
@@ -13,29 +14,36 @@ namespace Repository
             _dbContext = dbContext;
         }
 
-        public void CreateProfile(Profile profile)
+        public async Task CreateProfileAsync(Profile profile)
         {
-            _dbContext.Add(profile);
+            await _dbContext.AddAsync(profile);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void DeleteProfile(string profileId)
+        public async Task DeleteProfileAsync(string profileId)
         {
-            _dbContext.Remove(profileId);
+            var profile = await GetProfileByIdAsync(profileId);
+            if (profile != null)
+            {
+                _dbContext.Remove(profile);
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
-        public IEnumerable<Profile> GetAllProfiles()
+        public async Task<IEnumerable<Profile>> GetAllProfilesAsync()
         {
-            return _dbContext.Profiles.AsEnumerable();
+            return await _dbContext.Profiles.ToListAsync();
         }
 
-        public Profile GetProfileById(string profileId)
+        public async Task<Profile> GetProfileByIdAsync(string profileId)
         {
-            return _dbContext.Profiles.SingleOrDefault(x => x.ProfileId == profileId);
+            return await _dbContext.Profiles.SingleOrDefaultAsync(x => x.ProfileId == profileId);
         }
 
-        public  void UpdateProfile(Profile profile)
+        public async Task UpdateProfileAsync(Profile profile)
         {
             _dbContext.Profiles.Update(profile);
+            await _dbContext.SaveChangesAsync();
         }
 
     }

@@ -4,10 +4,10 @@ namespace Interfaces
 {
     public interface IProfileService
 {
-        IEnumerable<Profile> GetAllProfiles();
-        Profile GetProfileById(string profileId);
-        void CreateProfile(Profile profile);
-        void UpdateProfile(Profile profile);
-        void DeleteProfile(string profileId);
+        Task CreateProfileAsync(Profile profile);
+        Task DeleteProfileAsync(string profileId);
+        Task<IEnumerable<Profile>> GetAllProfilesAsync();
+        Task<Profile> GetProfileByIdAsync(string profileId);
+        Task UpdateProfileAsync(Profile profile);
     }
 }

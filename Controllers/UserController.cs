@@ -1,5 +1,4 @@
 ﻿using Interfaces;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
@@ -27,9 +26,9 @@ public class UserController : ControllerBase
     #region User 
 
     [HttpGet("users")]
-    public IActionResult GetAllUsers()
+    public async Task<IActionResult> GetAllUsers()
     {
-        var users = _userService.GetAllUsers();
+        var users = await _userService.GetAllUsersAsync();
 
         if(users == null)
         {
@@ -40,9 +39,9 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("users/{userId}")]
-    public IActionResult GetUserById(string userId)
+    public async Task<IActionResult> GetUserById(string userId)
     {
-        var user = _userService.GetUserById(userId);
+        var user = await _userService.GetUserByIdAsync(userId);
 
         if (user == null)
         {
@@ -54,11 +53,11 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("users")]
-    public IActionResult CreateUser([FromBody] User user)
+    public async Task<IActionResult> CreateUser([FromBody] User user)
     {
-        _userService.CreateUser(user);
+        await _userService.CreateUserAsync(user);
 
-        var createdUser = _userService.GetUserById(user.UserId);
+        var createdUser = await _userService.GetUserByIdAsync(user.UserId);
 
         if(createdUser == null)
         {
@@ -69,9 +68,9 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("users/{userId}")]
-    public IActionResult UpdateUser(string userId, [FromBody] User updatedUser)
+    public async Task<IActionResult> UpdateUser(string userId, [FromBody] User updatedUser)
     {
-        var existingUser = _userService.GetUserById(userId);
+        var existingUser = await _userService.GetUserByIdAsync(userId);
 
         if (existingUser == null)
         {
@@ -84,9 +83,9 @@ public class UserController : ControllerBase
         existingUser.Password = updatedUser.Password;
         existingUser.Email = updatedUser.Email;
 
-        _userService.UpdateUser(existingUser);
+        await _userService.UpdateUserAsync(existingUser);
 
-        var updatedUserDb = _userService.GetUserById(userId);
+        var updatedUserDb = await _userService.GetUserByIdAsync(userId);
 
         if(updatedUserDb != updatedUser)
         {
@@ -98,9 +97,9 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("users/{userId}")]
-    public IActionResult DeleteUser(string userId)
+    public async Task<IActionResult> DeleteUser(string userId)
     {
-        var user = _userService.GetUserById(userId);
+        var user = await _userService.GetUserByIdAsync(userId);
 
         if (user == null)
         {
@@ -108,9 +107,9 @@ public class UserController : ControllerBase
             return NotFound();
         }
 
-        _userService.DeleteUser(user);
+        await _userService.DeleteUserAsync(user);
 
-        var userDeleted = _userService.GetUserById(userId);
+        var userDeleted = await _userService.GetUserByIdAsync(userId);
 
         if(userDeleted != null)
         {
@@ -123,9 +122,9 @@ public class UserController : ControllerBase
     #region Profile
 
     [HttpGet("profiles/{profileId}")]
-    public IActionResult GetProfile(string profileId)
+    public async Task<IActionResult> GetProfile(string profileId)
     {
-        var profile = _profileService.GetProfileById(profileId);
+        var profile = await _profileService.GetProfileByIdAsync(profileId);
 
         if (profile == null)
         {
@@ -137,11 +136,11 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("profiles")]
-    public IActionResult CreateProfile([FromBody] Profile profile)
+    public async Task<IActionResult> CreateProfile([FromBody] Profile profile)
     {
-        _profileService.CreateProfile(profile);
+        await _profileService.CreateProfileAsync(profile);
 
-        var createdProfile = _profileService.GetProfileById(profile.ProfileId);
+        var createdProfile = await _profileService.GetProfileByIdAsync(profile.ProfileId);
 
         if (createdProfile == null)
         {
@@ -153,9 +152,9 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("profiles/{profileId}")]
-    public IActionResult UpdateProfile(string profileId, [FromBody] Profile updatedProfile)
+    public async Task<IActionResult> UpdateProfile(string profileId, [FromBody] Profile updatedProfile)
     {
-        var existingProfile = _profileService.GetProfileById(profileId);
+        var existingProfile = await _profileService.GetProfileByIdAsync(profileId);
 
         if (existingProfile == null)
         {
@@ -167,9 +166,9 @@ public class UserController : ControllerBase
         existingProfile.Picture = updatedProfile.Picture;
         existingProfile.FavoriteMovies = updatedProfile.FavoriteMovies;
 
-        _profileService.UpdateProfile(existingProfile);
+        await _profileService.UpdateProfileAsync(existingProfile);
 
-        var updatedProfileDb = _profileService.GetProfileById(profileId);
+        var updatedProfileDb = await _profileService.GetProfileByIdAsync(profileId);
 
         if (updatedProfileDb != updatedProfile)
         {
@@ -181,9 +180,9 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("profiles/{profileId}")]
-    public IActionResult DeleteProfile(string profileId)
+    public async Task<IActionResult> DeleteProfile(string profileId)
     {
-        var profile = _profileService.GetProfileById(profileId);
+        var profile = await _profileService.GetProfileByIdAsync(profileId);
 
         if (profile == null)
         {
@@ -191,9 +190,9 @@ public class UserController : ControllerBase
             return NotFound();
         }
 
-        _profileService.DeleteProfile(profileId);
+        await _profileService.DeleteProfileAsync(profileId);
 
-        var profileDeleted = _profileService.GetProfileById(profileId);
+        var profileDeleted = await _profileService.GetProfileByIdAsync(profileId);
 
         if (profileDeleted != null)
         {
@@ -208,9 +207,9 @@ public class UserController : ControllerBase
     #region Review
 
     [HttpGet("reviews/{reviewId}")]
-    public IActionResult GetReview(string reviewId)
+    public async Task<IActionResult> GetReview(string reviewId)
     {
-        var review = _reviewService.GetReviewById(reviewId);
+        var review = await _reviewService.GetReviewByIdAsync(reviewId);
 
         if (review == null)
         {
@@ -222,11 +221,11 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("reviews")]
-    public IActionResult CreateReview([FromBody] Review review)
+    public async Task<IActionResult> CreateReview([FromBody] Review review)
     {
-        _reviewService.CreateReview(review);
+        await _reviewService.CreateReviewAsync(review);
 
-        var createdReview = _reviewService.GetReviewById(review.ReviewId);
+        var createdReview = await _reviewService.GetReviewByIdAsync(review.ReviewId);
 
         if (createdReview == null)
         {
@@ -238,9 +237,9 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("reviews/{reviewId}")]
-    public IActionResult UpdateReview(string reviewId, [FromBody] Review updatedReview)
+    public async Task<IActionResult> UpdateReview(string reviewId, [FromBody] Review updatedReview)
     {
-        var existingReview = _reviewService.GetReviewById(reviewId);
+        var existingReview = await _reviewService.GetReviewByIdAsync(reviewId);
 
         if (existingReview == null)
         {
@@ -257,9 +256,9 @@ public class UserController : ControllerBase
         existingReview.Rating = updatedReview.Rating;
         existingReview.PublishedOn = updatedReview.PublishedOn;
 
-        _reviewService.UpdateReview(existingReview);
+        await _reviewService.UpdateReviewAsync(existingReview);
 
-        var updatedReviewDb = _reviewService.GetReviewById(reviewId);
+        var updatedReviewDb = await _reviewService.GetReviewByIdAsync(reviewId);
 
         if (updatedReviewDb != updatedReview)
         {
@@ -271,9 +270,9 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("reviews/{reviewId}")]
-    public IActionResult DeleteReview(string reviewId)
+    public async Task<IActionResult> DeleteReview(string reviewId)
     {
-        var review = _reviewService.GetReviewById(reviewId);
+        var review = await _reviewService.GetReviewByIdAsync(reviewId);
 
         if (review == null)
         {
@@ -281,9 +280,9 @@ public class UserController : ControllerBase
             return NotFound();
         }
 
-        _reviewService.DeleteReview(reviewId);
+        await _reviewService.DeleteReviewAsync(reviewId);
 
-        var reviewDeleted = _reviewService.GetReviewById(reviewId);
+        var reviewDeleted = await _reviewService.GetReviewByIdAsync(reviewId);
 
         if (reviewDeleted != null)
         {
@@ -296,26 +295,30 @@ public class UserController : ControllerBase
     #endregion
 
 
-    #region Login & Sing up
+    #region Login & Sign up
 
-    [HttpGet("auth/login/{user}")]
-    public IActionResult Login([FromBody] User user)
+    [HttpPost("auth/login")]
+    public async Task<IActionResult> Login([FromBody] User user)
     {
-        //Authentication service
+        // Validate user credentials and generate a token
+        // For simplicity, let's assume you have an authentication service
+        
+
         return Ok();
     }
 
-    [HttpGet("auth/signup/{profile}")]
-    public IActionResult SignUp([FromBody] Profile profile)
+    [HttpPost("auth/signup")]
+    public async Task<IActionResult> SignUp([FromBody] Profile profile)
     {
-        //Authentication Service
-        return Ok();
+        return Ok(profile);
     }
 
-    [HttpGet("auth/logout/{userid}")]
-    public IActionResult LogOut(string userId)
+    [HttpPost("auth/logout")]
+    public async Task<IActionResult> LogOut([FromQuery] string userId)
     {
-        return Ok();
+        
+
+        return Ok("Logged out successfully.");
     }
 
     #endregion

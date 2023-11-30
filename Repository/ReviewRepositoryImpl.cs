@@ -14,30 +14,36 @@ namespace Repository
             _dbContext = dbContext;
         }
 
-        public  void CreateReview(Review review)
+        public async Task CreateReviewAsync(Review review)
         {
-            _dbContext.Reviews.Add(review);
+            await _dbContext.Reviews.AddAsync(review);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public  void DeleteReview(string reviewId)
+        public async Task DeleteReviewAsync(string reviewId)
         {
-            var reviewDb =  GetReviewById(reviewId);
-            _dbContext.Reviews.Remove(reviewDb);
+            var reviewDb = await GetReviewByIdAsync(reviewId);
+            if (reviewDb != null)
+            {
+                _dbContext.Reviews.Remove(reviewDb);
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
-        public IEnumerable<Review> GetAllReviews()
+        public async Task<IEnumerable<Review>> GetAllReviewsAsync()
         {
-            return _dbContext.Reviews.AsEnumerable();
+            return await _dbContext.Reviews.ToListAsync();
         }
 
-        public Review GetReviewById(string reviewId)
+        public async Task<Review> GetReviewByIdAsync(string reviewId)
         {
-            return _dbContext.Reviews.SingleOrDefault(x => x.ReviewId == reviewId);
+            return await _dbContext.Reviews.SingleOrDefaultAsync(x => x.ReviewId == reviewId);
         }
 
-        public  void UpdateReview(Review review)
+        public async Task UpdateReviewAsync(Review review)
         {
             _dbContext.Reviews.Update(review);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
