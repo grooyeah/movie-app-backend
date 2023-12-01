@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Repository;
 using Services;
 using Microsoft.OpenApi.Models;
+using Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,7 @@ builder.Services.AddScoped<IProfileRepository, ProfileRepositoryImpl>();
 builder.Services.AddScoped<IUserService, UserServiceImpl>();
 builder.Services.AddScoped<IReviewService, ReviewServiceImpl>();
 builder.Services.AddScoped<IProfileService, ProfileServiceImpl>();
+builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
 
 // Add logging and other services as needed...
 

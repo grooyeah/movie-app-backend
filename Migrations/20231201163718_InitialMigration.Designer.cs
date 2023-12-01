@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace movieappbackend.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20231129194417_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231201163718_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

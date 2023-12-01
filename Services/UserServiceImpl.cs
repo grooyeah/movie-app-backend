@@ -24,6 +24,7 @@ namespace Services
 
         public async Task CreateUserAsync(User user)
         {
+            user.UserId = Guid.NewGuid().ToString();
             await _userRepository.CreateUserAsync(user);
         }
 

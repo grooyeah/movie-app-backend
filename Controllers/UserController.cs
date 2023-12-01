@@ -1,4 +1,5 @@
-﻿using Interfaces;
+﻿using Auth;
+using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
@@ -12,14 +13,17 @@ public class UserController : ControllerBase
     private readonly IUserService _userService;
     private readonly IReviewService _reviewService;
     private readonly IProfileService _profileService;
+    private readonly IAuthService _authService;
     private readonly ILogger<UserController> _logger;
 
     public UserController(IUserService userService, IReviewService reviewService,
-        IProfileService profileService, ILogger<UserController> logger)
+        IProfileService profileService,IAuthService authService,
+        ILogger<UserController> logger)
     {
         _userService = userService;
         _reviewService = reviewService;
         _profileService = profileService;
+        _authService = authService;
         _logger = logger;
     }
 
@@ -298,25 +302,38 @@ public class UserController : ControllerBase
     #region Login & Sign up
 
     [HttpPost("auth/login")]
-    public async Task<IActionResult> Login([FromBody] User user)
+    public async Task<IActionResult> SignIn([FromBody] User user)
     {
-        // Validate user credentials and generate a token
-        // For simplicity, let's assume you have an authentication service
-        
-
-        return Ok();
+       var existingUser = await _authService.SignIn(user);
+       if(existingUser == null)
+        {
+            _logger.LogWarning($"Could not find user with id {user.UserId}");
+            return NotFound("User could not be found.");
+        }
+        return Ok(existingUser);
     }
 
     [HttpPost("auth/signup")]
     public async Task<IActionResult> SignUp([FromBody] Profile profile)
-    {
+    { 
+        var createdUser = await _authService.SignUp(profile);
+        if (createdUser == null)
+        {
+            _logger.LogWarning($"Could not create user.");
+            return NotFound("User could not be found.");
+        }
         return Ok(profile);
     }
 
     [HttpPost("auth/logout")]
-    public async Task<IActionResult> LogOut([FromQuery] string userId)
+    public async Task<IActionResult> LogOut([FromBody] User user)
     {
-        
+        var userToLogout = await _authService.LogOut(user);
+        if(user == null)
+        {
+            _logger.LogWarning($"Could log out user. user not found");
+            return NoContent();
+        }
 
         return Ok("Logged out successfully.");
     }
