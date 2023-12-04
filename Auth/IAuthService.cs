@@ -1,11 +1,12 @@
-﻿using Models;
+﻿using Dtos;
+using Models;
 
 namespace Auth
 {
     public interface IAuthService
 {
-        Task<Profile> SignIn(User user);
-        Task<User> LogOut(User user);
-        Task<Profile> SignUp(Profile profile);
+        Task<string> SignIn(string email, string password);
+        Task<User> LogOut(UserDto user);
+        Task<Profile> SignUp(ProfileDto profile);
 }
 }

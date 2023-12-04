@@ -14,37 +14,88 @@ namespace Repository
             _dbContext = dbContext;
         }
 
-        public async Task CreateProfileAsync(Profile profile)
+        public async Task<bool> CreateProfileAsync(Profile profile)
         {
+            var profileToAdd = profile;
+
             await _dbContext.AddAsync(profile);
             await _dbContext.SaveChangesAsync();
+
+            var existingProfile = GetProfileByIdAsync(profile.ProfileId);
+
+            if(existingProfile == null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        public async Task DeleteProfileAsync(string profileId)
+        public async Task<bool> DeleteProfileAsync(string profileId)
         {
             var profile = await GetProfileByIdAsync(profileId);
-            if (profile != null)
+
+            if (profile == null)
             {
-                _dbContext.Remove(profile);
-                await _dbContext.SaveChangesAsync();
+                return false;
             }
+            
+            _dbContext.Remove(profile);
+            await _dbContext.SaveChangesAsync();
+
+            var existingProfile = await GetProfileByIdAsync(profile.ProfileId);
+            
+            if(existingProfile == null)
+            {
+                return false;
+            }
+            return true;
         }
 
         public async Task<IEnumerable<Profile>> GetAllProfilesAsync()
         {
-            return await _dbContext.Profiles.ToListAsync();
+            var allExistingProfiles = await _dbContext.Profiles.ToListAsync();
+
+            if(!allExistingProfiles.Any())
+            {
+                return null;
+            }
+
+            return allExistingProfiles;
         }
 
         public async Task<Profile> GetProfileByIdAsync(string profileId)
         {
-            return await _dbContext.Profiles.SingleOrDefaultAsync(x => x.ProfileId == profileId);
+            var existingProfile = await _dbContext.Profiles.SingleOrDefaultAsync(x => x.ProfileId == profileId);
+
+            if(existingProfile == null)
+            {
+                return null;
+            }
+
+            return existingProfile;
         }
 
-        public async Task UpdateProfileAsync(Profile profile)
+        public async Task<bool> UpdateProfileAsync(Profile profile)
         {
+            var profileToUpdate = profile;
+
             _dbContext.Profiles.Update(profile);
             await _dbContext.SaveChangesAsync();
-        }
 
+            var updatedProfile = await GetProfileByIdAsync(profileToUpdate.ProfileId);
+            
+            if(updatedProfile == null)
+            {
+                return false;
+            }
+
+            if(updatedProfile != profileToUpdate)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

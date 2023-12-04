@@ -1,26 +1,25 @@
-﻿using Dtos;
+﻿using Models;
 
-namespace Models
+namespace Dtos
 {
-    public class Review
-    {
-        public string ReviewId { get; set; }
-        public string ProfileId { get; set; }
+    public class ReviewDto
+{
         public string ImdbID { get; set; }
         public string Author { get; set; }
         public string MovieTitle { get; set; }
+        public string ReviewTitle { get; set; }
         public string ReviewText { get; set; }
-        public double Rating { get; set; }
+        public int Rating { get; set; }
         public DateTime PublishedOn { get; set; }
         public string UserId { get; set; }
 
-        public Review()
+        public ReviewDto()
         {
         }
 
-        public ReviewDto ToReviewDto()
+        public Review ToReview()
         {
-            return new ReviewDto
+            return new Review
             {
                 ImdbID = ImdbID,
                 Author = Author,
@@ -33,5 +32,4 @@ namespace Models
             };
         }
     }
-
 }

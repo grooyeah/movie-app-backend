@@ -1,4 +1,5 @@
-﻿using Interfaces;
+﻿using Dtos;
+using Interfaces;
 using Models;
 
 namespace Services
@@ -12,14 +13,14 @@ namespace Services
             _profileRepository = profileRepository;
         }
 
-        public async Task CreateProfileAsync(Profile profile)
+        public async Task<bool> CreateProfileAsync(ProfileDto profile)
         {
-            await _profileRepository.CreateProfileAsync(profile);
+            return await _profileRepository.CreateProfileAsync(profile.ToProfile());
         }
 
-        public async Task DeleteProfileAsync(string profileId)
+        public async Task<bool> DeleteProfileAsync(string profileId)
         {
-            await _profileRepository.DeleteProfileAsync(profileId);
+            return await _profileRepository.DeleteProfileAsync(profileId);
         }
 
         public async Task<IEnumerable<Profile>> GetAllProfilesAsync()
@@ -32,9 +33,9 @@ namespace Services
             return await _profileRepository.GetProfileByIdAsync(profileId);
         }
 
-        public async Task UpdateProfileAsync(Profile profile)
+        public async Task<bool> UpdateProfileAsync(ProfileDto profile)
         {
-            await _profileRepository.UpdateProfileAsync(profile);
+            return await _profileRepository.UpdateProfileAsync(profile.ToProfile());
         }
     }
 }

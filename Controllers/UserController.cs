@@ -1,4 +1,5 @@
 ﻿using Auth;
+using Dtos;
 using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -57,69 +58,44 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("users")]
-    public async Task<IActionResult> CreateUser([FromBody] User user)
+    public async Task<IActionResult> CreateUser([FromBody] UserDto user)
     {
-        await _userService.CreateUserAsync(user);
+        var result = await _userService.CreateUserAsync(user);
 
-        var createdUser = await _userService.GetUserByIdAsync(user.UserId);
-
-        if(createdUser == null)
+        if(!result)
         {
-            _logger.LogWarning($"Could not  create user with id {user.UserId}. Service returned null.");
+            _logger.LogWarning($"Could not  create user with id {user.ToUser().UserId}. Service returned null.");
             return NotFound();
         }
-        return Ok(createdUser);
+        return Ok("User created successfully!");
     }
 
     [HttpPut("users/{userId}")]
-    public async Task<IActionResult> UpdateUser(string userId, [FromBody] User updatedUser)
+    public async Task<IActionResult> UpdateUser(string userId, [FromBody] UserDto userToUpdate)
     {
-        var existingUser = await _userService.GetUserByIdAsync(userId);
+        var result = await _userService.UpdateUserAsync(userToUpdate);
 
-        if (existingUser == null)
+        if(!result)
         {
-            _logger.LogWarning($"Could not  create user with id {userId}. Service returned null.");
+            _logger.LogWarning($"Could not update user {userToUpdate.Username}. Service returned null.");
             return NotFound();
         }
 
-        // Update the existing user properties
-        existingUser.Username = updatedUser.Username;
-        existingUser.Password = updatedUser.Password;
-        existingUser.Email = updatedUser.Email;
-
-        await _userService.UpdateUserAsync(existingUser);
-
-        var updatedUserDb = await _userService.GetUserByIdAsync(userId);
-
-        if(updatedUserDb != updatedUser)
-        {
-            _logger.LogWarning($"Could not update user with id {userId}. Service returned null.");
-            return NoContent();
-        }
-
-        return NoContent();
+        return Ok("User updated successfully!");
     }
 
     [HttpDelete("users/{userId}")]
-    public async Task<IActionResult> DeleteUser(string userId)
+    public async Task<IActionResult> DeleteUser(UserDto user)
     {
-        var user = await _userService.GetUserByIdAsync(userId);
+        var result = await _userService.DeleteUserAsync(user);
 
-        if (user == null)
+        if (!result)
         {
-            _logger.LogWarning($"Could not delete user with id {userId}. Service returned null.");
+            _logger.LogWarning($"Could not delete user {user.Username}. Service returned null.");
             return NotFound();
         }
 
-        await _userService.DeleteUserAsync(user);
-
-        var userDeleted = await _userService.GetUserByIdAsync(userId);
-
-        if(userDeleted != null)
-        {
-            return Ok(user);
-        }
-        return NoContent();
+        return Ok("User deleted successfully!");
     }
     #endregion
 
@@ -140,70 +116,45 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("profiles")]
-    public async Task<IActionResult> CreateProfile([FromBody] Profile profile)
+    public async Task<IActionResult> CreateProfile([FromBody] ProfileDto profile)
     {
-        await _profileService.CreateProfileAsync(profile);
+        var result = await _profileService.CreateProfileAsync(profile);
 
-        var createdProfile = await _profileService.GetProfileByIdAsync(profile.ProfileId);
-
-        if (createdProfile == null)
+        if (!result)
         {
-            _logger.LogWarning($"Could not create profile with id {profile.ProfileId}. Service returned null.");
+            _logger.LogWarning($"Could not create profile {profile.User.Username}. Service returned null.");
             return NotFound();
         }
 
-        return Ok(createdProfile);
+        return Ok("Profile created successfully!");
     }
 
     [HttpPut("profiles/{profileId}")]
-    public async Task<IActionResult> UpdateProfile(string profileId, [FromBody] Profile updatedProfile)
+    public async Task<IActionResult> UpdateProfile(string profileId, [FromBody] ProfileDto profileToUpdate)
     {
-        var existingProfile = await _profileService.GetProfileByIdAsync(profileId);
+        var result = await _profileService.UpdateProfileAsync(profileToUpdate);
 
-        if (existingProfile == null)
+        if (!result)
         {
-            _logger.LogWarning($"Could not update profile with id {profileId}. Service returned null.");
+            _logger.LogWarning($"Could not update profile {profileToUpdate.User.Username}. Service returned null.");
             return NotFound();
         }
 
-        // Update the existing profile properties
-        existingProfile.Picture = updatedProfile.Picture;
-        existingProfile.FavoriteMovies = updatedProfile.FavoriteMovies;
-
-        await _profileService.UpdateProfileAsync(existingProfile);
-
-        var updatedProfileDb = await _profileService.GetProfileByIdAsync(profileId);
-
-        if (updatedProfileDb != updatedProfile)
-        {
-            _logger.LogWarning($"Could not update profile with id {profileId}. Service returned null.");
-            return NoContent();
-        }
-
-        return NoContent();
+        return Ok("Profile updated successfully!");
     }
 
     [HttpDelete("profiles/{profileId}")]
     public async Task<IActionResult> DeleteProfile(string profileId)
     {
-        var profile = await _profileService.GetProfileByIdAsync(profileId);
+        var result = await _profileService.DeleteProfileAsync(profileId);
 
-        if (profile == null)
+        if (!result)
         {
-            _logger.LogWarning($"Could not delete profile with id {profileId}. Service returned null.");
+            _logger.LogWarning($"Could not delete profile {profileId}. Service returned null.");
             return NotFound();
         }
 
-        await _profileService.DeleteProfileAsync(profileId);
-
-        var profileDeleted = await _profileService.GetProfileByIdAsync(profileId);
-
-        if (profileDeleted != null)
-        {
-            return Ok(profile);
-        }
-
-        return NoContent();
+        return Ok("Profile deleted successfully!");
     }
 
     #endregion
@@ -225,75 +176,45 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("reviews")]
-    public async Task<IActionResult> CreateReview([FromBody] Review review)
+    public async Task<IActionResult> CreateReview([FromBody] ReviewDto review)
     {
-        await _reviewService.CreateReviewAsync(review);
+        var result = await _reviewService.CreateReviewAsync(review);
 
-        var createdReview = await _reviewService.GetReviewByIdAsync(review.ReviewId);
-
-        if (createdReview == null)
+        if (!result)
         {
-            _logger.LogWarning($"Could not create review with id {review.ReviewId}. Service returned null.");
+            _logger.LogWarning($"Could not create review . Service returned null.");
             return NotFound();
         }
 
-        return Ok(createdReview);
+        return Ok("Review created successfully!");
     }
 
     [HttpPut("reviews/{reviewId}")]
-    public async Task<IActionResult> UpdateReview(string reviewId, [FromBody] Review updatedReview)
+    public async Task<IActionResult> UpdateReview(string reviewId, [FromBody] ReviewDto reviewToUpdate)
     {
-        var existingReview = await _reviewService.GetReviewByIdAsync(reviewId);
+        var result = await _reviewService.UpdateReviewAsync(reviewToUpdate);
 
-        if (existingReview == null)
+        if (!result)
         {
-            _logger.LogWarning($"Could not update review with id {reviewId}. Service returned null.");
+            _logger.LogWarning($"Could not update review . Service returned null.");
             return NotFound();
         }
 
-        // Update the existing review properties
-        existingReview.ImdbID = updatedReview.ImdbID;
-        existingReview.Author = updatedReview.Author;
-        existingReview.MovieTitle = updatedReview.MovieTitle;
-        existingReview.ReviewTitle = updatedReview.ReviewTitle;
-        existingReview.ReviewText = updatedReview.ReviewText;
-        existingReview.Rating = updatedReview.Rating;
-        existingReview.PublishedOn = updatedReview.PublishedOn;
-
-        await _reviewService.UpdateReviewAsync(existingReview);
-
-        var updatedReviewDb = await _reviewService.GetReviewByIdAsync(reviewId);
-
-        if (updatedReviewDb != updatedReview)
-        {
-            _logger.LogWarning($"Could not update review with id {reviewId}. Service returned null.");
-            return NoContent();
-        }
-
-        return NoContent();
+        return Ok("Review updated successfully!");
     }
 
     [HttpDelete("reviews/{reviewId}")]
     public async Task<IActionResult> DeleteReview(string reviewId)
     {
-        var review = await _reviewService.GetReviewByIdAsync(reviewId);
+        var result = await _reviewService.DeleteReviewAsync(reviewId);
 
-        if (review == null)
+        if (!result)
         {
-            _logger.LogWarning($"Could not delete review with id {reviewId}. Service returned null.");
+            _logger.LogWarning($"Could not delete review . Service returned null.");
             return NotFound();
         }
 
-        await _reviewService.DeleteReviewAsync(reviewId);
-
-        var reviewDeleted = await _reviewService.GetReviewByIdAsync(reviewId);
-
-        if (reviewDeleted != null)
-        {
-            return Ok(review);
-        }
-
-        return NoContent();
+        return Ok("Review deleted successfully!");
     }
 
     #endregion
@@ -302,19 +223,19 @@ public class UserController : ControllerBase
     #region Login & Sign up
 
     [HttpPost("auth/login")]
-    public async Task<IActionResult> SignIn([FromBody] User user)
+    public async Task<IActionResult> SignIn(UserDto userDto)
     {
-       var existingUser = await _authService.SignIn(user);
-       if(existingUser == null)
+       var token = await _authService.SignIn(userDto.Email, userDto.Password);
+       if(token == null)
         {
-            _logger.LogWarning($"Could not find user with id {user.UserId}");
+            _logger.LogWarning($"Could not find user with email {userDto.Email}");
             return NotFound("User could not be found.");
         }
-        return Ok(existingUser);
+        return Ok(token);
     }
 
     [HttpPost("auth/signup")]
-    public async Task<IActionResult> SignUp([FromBody] Profile profile)
+    public async Task<IActionResult> SignUp([FromBody] ProfileDto profile)
     { 
         var createdUser = await _authService.SignUp(profile);
         if (createdUser == null)
@@ -322,11 +243,11 @@ public class UserController : ControllerBase
             _logger.LogWarning($"Could not create user.");
             return NotFound("User could not be found.");
         }
-        return Ok(profile);
+        return Ok(createdUser);
     }
 
     [HttpPost("auth/logout")]
-    public async Task<IActionResult> LogOut([FromBody] User user)
+    public async Task<IActionResult> LogOut([FromBody] UserDto user)
     {
         var userToLogout = await _authService.LogOut(user);
         if(user == null)

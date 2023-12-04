@@ -1,4 +1,5 @@
-﻿using Interfaces;
+﻿using Dtos;
+using Interfaces;
 using Models;
 
 namespace Services
@@ -22,26 +23,35 @@ namespace Services
             return await _userRepository.GetUserByIdAsync(userId);
         }
 
-        public async Task CreateUserAsync(User user)
+        public async Task<bool> CreateUserAsync(UserDto user)
         {
-            user.UserId = Guid.NewGuid().ToString();
-            await _userRepository.CreateUserAsync(user);
+            user.ToUser().UserId = Guid.NewGuid().ToString();
+            var result = await _userRepository.CreateUserAsync(user.ToUser());
+            return result;
         }
 
-        public async Task UpdateUserAsync(User user)
+        public async Task<bool> UpdateUserAsync(UserDto user)
         {
-            var userDb = await _userRepository.GetUserByIdAsync(user.UserId);
+            var userDb = await _userRepository.GetUserByIdAsync(user.ToUser().UserId);
 
-            if (userDb != null)
+            if (userDb == null)
             {
-                _userRepository.UpdateUserAsync(user);
+                return false;
             }
-            // Handle case where user is not found
+            var result = await _userRepository.UpdateUserAsync(user.ToUser());
+            return result;
         }
 
-        public async Task DeleteUserAsync(User user)
+        public async Task<bool> DeleteUserAsync(UserDto user)
         {
-            await _userRepository.DeleteUserAsync(user);
+           var result = await _userRepository.DeleteUserAsync(user.ToUser());
+            return result;
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            var existingUser = await _userRepository.GetUserByEmailAsync(email);
+            return existingUser;
         }
     }
 }

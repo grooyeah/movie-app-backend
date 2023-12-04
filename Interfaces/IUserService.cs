@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using Dtos;
+using Models;
 
 namespace Interfaces
 {
@@ -6,8 +7,10 @@ namespace Interfaces
     {
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<User> GetUserByIdAsync(string userId);
-        Task CreateUserAsync(User user);
-        Task UpdateUserAsync(User user);
-        Task DeleteUserAsync(User user);
+        Task<bool> CreateUserAsync(UserDto user);
+        Task<bool> UpdateUserAsync(UserDto user);
+        Task<bool> DeleteUserAsync(UserDto user);
+        Task<User> GetUserByEmailAsync(string email);
+
     }
 }

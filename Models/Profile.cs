@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewEngines;
+﻿using Dtos;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 
 namespace Models
 {
@@ -22,5 +23,15 @@ namespace Models
         {
         }
 
+        public ProfileDto ToProfileDto()
+        {
+            return new ProfileDto
+            {
+                User = User.ToUserDto(),
+                Picture = Picture,
+                FavoriteMovies = FavoriteMovies,
+                Reviews = Reviews.Select(review => review.ToReviewDto()).ToList()
+            };
+        }
     }
 }

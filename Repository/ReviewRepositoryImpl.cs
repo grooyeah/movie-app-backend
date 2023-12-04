@@ -1,4 +1,5 @@
 ﻿using Database;
+using Dtos;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Models;
@@ -43,8 +44,12 @@ namespace Repository
 
         public async Task<ICollection<Review>> GetAllReviewsAsync()
         {
-            return await _dbContext.Reviews.ToListAsync();
-        }
+            var allExistingReviews = await _dbContext.Reviews.ToListAsync();
+
+            if(allExistingReviews == null)
+            {
+                return null;
+            }
 
         public async Task<ICollection<Review>>  GetReviewByProfileIdAsync(string profileId)
         {
