@@ -1,4 +1,5 @@
-﻿using Interfaces;
+﻿using Dtos;
+using Interfaces;
 using Models;
 
 namespace Services
@@ -12,14 +13,14 @@ namespace Services
             _reviewRepository = reviewRepository;
         }
 
-        public async Task CreateReviewAsync(Review review)
+        public async Task<bool> CreateReviewAsync(ReviewDto review)
         {
-            await _reviewRepository.CreateReviewAsync(review);
+            return await _reviewRepository.CreateReviewAsync(review.ToReview());
         }
 
-        public async Task DeleteReviewAsync(string reviewId)
+        public async Task<bool> DeleteReviewAsync(string reviewId)
         {
-            await _reviewRepository.DeleteReviewAsync(reviewId);
+            return await _reviewRepository.DeleteReviewAsync(reviewId);
         }
 
         public async Task<IEnumerable<Review>> GetAllReviewsAsync()
@@ -32,9 +33,9 @@ namespace Services
             return await _reviewRepository.GetReviewByIdAsync(reviewId);
         }
 
-        public async Task UpdateReviewAsync(Review review)
+        public async Task<bool> UpdateReviewAsync(ReviewDto review)
         {
-            await _reviewRepository.UpdateReviewAsync(review);
+            return await _reviewRepository.UpdateReviewAsync(review.ToReview());
         }
     }
 }

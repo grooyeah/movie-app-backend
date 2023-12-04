@@ -4,10 +4,10 @@ namespace Interfaces
 {
     public interface IReviewRepository
     {
-        Task CreateReviewAsync(Review review);
-        Task DeleteReviewAsync(string reviewId);
+        Task<bool> CreateReviewAsync(Review review);
+        Task<bool> DeleteReviewAsync(string reviewId);
         Task<IEnumerable<Review>> GetAllReviewsAsync();
         Task<Review> GetReviewByIdAsync(string reviewId);
-        Task UpdateReviewAsync(Review review);
+        Task<bool> UpdateReviewAsync(Review review);
     }
 }

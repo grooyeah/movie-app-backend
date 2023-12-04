@@ -1,13 +1,14 @@
-﻿using Models;
+﻿using Dtos;
+using Models;
 
 namespace Interfaces
 {
     public interface IReviewService
     {
-        Task CreateReviewAsync(Review review);
-        Task DeleteReviewAsync(string reviewId);
+        Task<bool> CreateReviewAsync(ReviewDto review);
+        Task<bool> DeleteReviewAsync(string reviewId);
         Task<IEnumerable<Review>> GetAllReviewsAsync();
         Task<Review> GetReviewByIdAsync(string reviewId);
-        Task UpdateReviewAsync(Review review);
+        Task<bool> UpdateReviewAsync(ReviewDto review);
     }
 }

@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace movieappbackend.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20231201163718_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20231204092506_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -103,9 +103,13 @@ namespace movieappbackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Password")
+                    b.Property<byte[]>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("bytea");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("bytea");
 
                     b.Property<string>("Username")
                         .IsRequired()

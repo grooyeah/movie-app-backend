@@ -1,4 +1,5 @@
 ﻿using Database;
+using Dtos;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Models;
@@ -14,36 +15,87 @@ namespace Repository
             _dbContext = dbContext;
         }
 
-        public async Task CreateReviewAsync(Review review)
+        public async Task<bool> CreateReviewAsync(Review review)
         {
             await _dbContext.Reviews.AddAsync(review);
             await _dbContext.SaveChangesAsync();
+
+            var existingReview = await GetReviewByIdAsync(review.ReviewId);
+            
+            if(existingReview == null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        public async Task DeleteReviewAsync(string reviewId)
+        public async Task<bool> DeleteReviewAsync(string reviewId)
         {
-            var reviewDb = await GetReviewByIdAsync(reviewId);
-            if (reviewDb != null)
+            var reviewToRemove = await GetReviewByIdAsync(reviewId);
+         
+            if (reviewToRemove == null)
             {
-                _dbContext.Reviews.Remove(reviewDb);
-                await _dbContext.SaveChangesAsync();
+                return false;
             }
+
+            _dbContext.Reviews.Remove(reviewToRemove);
+            await _dbContext.SaveChangesAsync();
+
+            var existingUser = await GetReviewByIdAsync(reviewId);
+            
+            if(existingUser == null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public async Task<IEnumerable<Review>> GetAllReviewsAsync()
         {
-            return await _dbContext.Reviews.ToListAsync();
+            var allExistingReviews = await _dbContext.Reviews.ToListAsync();
+
+            if(allExistingReviews == null)
+            {
+                return null;
+            }
+
+            return allExistingReviews;
         }
 
         public async Task<Review> GetReviewByIdAsync(string reviewId)
         {
-            return await _dbContext.Reviews.SingleOrDefaultAsync(x => x.ReviewId == reviewId);
+            var existingReview = await _dbContext.Reviews.SingleOrDefaultAsync(x => x.ReviewId == reviewId);
+            
+            if(existingReview == null)
+            {
+                return null;
+            }
+
+            return existingReview;
         }
 
-        public async Task UpdateReviewAsync(Review review)
+        public async Task<bool> UpdateReviewAsync(Review review)
         {
+            var reviewToUpdate = review;
+
             _dbContext.Reviews.Update(review);
             await _dbContext.SaveChangesAsync();
+
+            var updatedReview = await GetReviewByIdAsync(review.ReviewId);
+
+            if(updatedReview == null)
+            {
+                return false;
+            }
+
+            if(updatedReview != reviewToUpdate)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
