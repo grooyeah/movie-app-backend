@@ -7,23 +7,11 @@ namespace Repository
 {
     public class UserRepositoryImpl : IUserRepository
 {
-        private readonly UserDbContext _dbContext;
+        private readonly MovieAppDbContext _dbContext;
 
-        public UserRepositoryImpl(UserDbContext dbContext)
+        public UserRepositoryImpl(MovieAppDbContext dbContext)
         {
             _dbContext = dbContext;
-        }
-
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
-        {
-            var allExistingUsers = await _dbContext.Users.ToListAsync();
-            
-            if(!allExistingUsers.Any())
-            {
-                return null;
-            }
-
-            return allExistingUsers;
         }
 
         public async Task<User> GetUserByIdAsync(string userId)
@@ -38,41 +26,26 @@ namespace Repository
             return existingUser;
         }
 
-        public async Task<bool> CreateUserAsync(User user)
-        {
-            await _dbContext.Users.AddAsync(user);
-            await _dbContext.SaveChangesAsync();
-
-            var existingUser = await GetUserByEmailAsync(user.Email);
-
-            if(existingUser == null)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public async Task<bool> UpdateUserAsync(User user)
+        public async Task<User> UpdateUserAsync(User user)
         {
             var userToUpdate = user;
 
             _dbContext.Users.Update(user);
             await _dbContext.SaveChangesAsync();
 
-            var updatedUser = await GetUserByEmailAsync(userToUpdate.Email);
+            var updatedUser = await GetUserByIdAsync(userToUpdate.UserId);
             
             if(updatedUser == null)
             {
-                return false;
+                return null;
             }
 
             if(updatedUser != userToUpdate)
             {
-                return false;
+                return null;
             }
 
-            return true;
+            return updatedUser;
         }
 
         public async Task<bool> DeleteUserAsync(User user)
@@ -82,25 +55,13 @@ namespace Repository
             _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
 
-            var exisintUser = await GetUserByEmailAsync(user.Email);
+            var exisintUser = await GetUserByIdAsync(user.UserId);
             if(exisintUser == null)
             {
                 return true;
             }
 
             return false;
-        }
-
-        public async Task<User> GetUserByEmailAsync(string email)
-        {
-            var existingUser = await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
-            
-            if(existingUser == null)
-            {
-                return null;
-            }
-
-            return existingUser;
         }
     }
 }

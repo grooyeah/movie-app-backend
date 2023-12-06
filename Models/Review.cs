@@ -12,24 +12,42 @@ namespace Models
         public string ReviewText { get; set; }
         public double Rating { get; set; }
         public DateTime PublishedOn { get; set; }
-        public string UserId { get; set; }
+        public string ProfileId { get; set; }
+        public Profile Profile { get; set; }
 
         public Review()
         {
+        }
+
+        public Review(string reviewId, string imdbId,
+            string authorName, string movieTitle, string reviewTitle,
+            string reviewText, int rating, DateTime publishedOn, string profileId, Profile profile)
+        {
+            ReviewId = reviewId;
+            ImdbId = imdbId;
+            AuthorName = authorName;
+            MovieTitle = movieTitle;
+            ReviewTitle = reviewTitle;
+            ReviewText = reviewText;
+            Rating = rating;
+            PublishedOn = publishedOn;
+            ProfileId = profileId;
+            Profile = profile;
         }
 
         public ReviewDto ToReviewDto()
         {
             return new ReviewDto
             {
-                ImdbID = ImdbID,
-                Author = Author,
+                ReviewId = ReviewId,
+                ImdbId = ImdbId,
+                AuthorName = AuthorName,
                 MovieTitle = MovieTitle,
                 ReviewTitle = ReviewTitle,
-                ReviewText = ReviewText,
+                Review = ReviewText,
                 Rating = Rating,
                 PublishedOn = PublishedOn,
-                UserId = UserId
+                ProfileId = ProfileId
             };
         }
     }
