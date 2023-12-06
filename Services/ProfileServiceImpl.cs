@@ -18,24 +18,19 @@ namespace Services
             return await _profileRepository.CreateProfileAsync(profile.ToProfile());
         }
 
+        public async Task<Profile> GetProfileByUserIdAsync(string userId)
+        {
+            return await _profileRepository.GetProfileByUserIdAsync(userId);
+        }
+
+        public async Task<Profile> UpdateProfileAsync(ProfileDto profile)
+        {
+            return await _profileRepository.UpdateProfileAsync(profile.ToProfile());
+        }
+
         public async Task<bool> DeleteProfileAsync(string profileId)
         {
             return await _profileRepository.DeleteProfileAsync(profileId);
-        }
-
-        public async Task<IEnumerable<Profile>> GetAllProfilesAsync()
-        {
-            return await _profileRepository.GetAllProfilesAsync();
-        }
-
-        public async Task<Profile> GetProfileByIdAsync(string profileId)
-        {
-            return await _profileRepository.GetProfileByIdAsync(profileId);
-        }
-
-        public async Task<bool> UpdateProfileAsync(ProfileDto profile)
-        {
-            return await _profileRepository.UpdateProfileAsync(profile.ToProfile());
         }
     }
 }

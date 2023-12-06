@@ -4,31 +4,50 @@ namespace Dtos
 {
     public class ReviewDto
 {
-        public string ImdbID { get; set; }
-        public string Author { get; set; }
+        public string ReviewId { get; set; }
+        public string ImdbId { get; set; }
+        public string AuthorName { get; set; }
         public string MovieTitle { get; set; }
         public string ReviewTitle { get; set; }
-        public string ReviewText { get; set; }
+        public string Review { get; set; }
         public int Rating { get; set; }
         public DateTime PublishedOn { get; set; }
-        public string UserId { get; set; }
+        public string ProfileId { get; set; }
+        public Profile Profile { get; set; }
 
         public ReviewDto()
         {
+        }
+
+        public ReviewDto(string reviewId, string imdbId, 
+            string authorName, string movieTitle, string reviewTitle,
+            string review, int rating, DateTime publishedOn, string profileId, Profile profile)
+        {
+            ReviewId = reviewId;
+            ImdbId = imdbId;
+            AuthorName = authorName;
+            MovieTitle = movieTitle;
+            ReviewTitle = reviewTitle;
+            Review = review;
+            Rating = rating;
+            PublishedOn = publishedOn;
+            ProfileId = profileId;
+            Profile = profile;
         }
 
         public Review ToReview()
         {
             return new Review
             {
-                ImdbID = ImdbID,
-                Author = Author,
+                ReviewId = ReviewId,
+                ImdbId = ImdbId,
+                AuthorName = AuthorName,
                 MovieTitle = MovieTitle,
                 ReviewTitle = ReviewTitle,
-                ReviewText = ReviewText,
+                ReviewText = Review,
                 Rating = Rating,
                 PublishedOn = PublishedOn,
-                UserId = UserId
+                ProfileId = ProfileId
             };
         }
     }

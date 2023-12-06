@@ -4,17 +4,20 @@ namespace Dtos
 {
     public class ProfileDto
 {
-        public UserDto User { get; set; }
+        public string ProfileId { get; set; }
+        public string UserId { get; set; }
         public string Picture { get; set; }
-        public List<string> FavoriteMovies { get; set; }
+        public User User { get; set; }
+        public List<MovieList> MovieLists { get; set; }
         public List<ReviewDto> Reviews { get; set; }
 
-        public ProfileDto(UserDto user, string picture, List<string> favoriteMovies, List<ReviewDto> reviews)
+        public ProfileDto(string profileId,string userId, string picture, List<MovieList> movieLists, List<ReviewDto> reviews, User user)
         {
-            User = user;
+            UserId = userId;
             Picture = picture;
-            FavoriteMovies = favoriteMovies;
+            MovieLists = movieLists;
             Reviews = reviews;
+            User = user;
         }
 
         public ProfileDto()
@@ -25,10 +28,11 @@ namespace Dtos
         {
             return new Profile
             {
-                User = User.ToUser(),
+                ProfileId = ProfileId,
+                UserId = UserId,
                 Picture = Picture,
-                FavoriteMovies = FavoriteMovies,
-                Reviews = Reviews.Select(reviewDto => reviewDto.ToReview()).ToList()
+                MovieLists = MovieLists,
+                Reviews = Reviews.Select(x => x.ToReview()).ToList()
             };
         }
 

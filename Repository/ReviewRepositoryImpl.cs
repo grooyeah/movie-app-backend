@@ -8,9 +8,9 @@ namespace Repository
 {
     public class ReviewRepositoryImpl : IReviewRepository
     {
-        private readonly UserDbContext _dbContext;
+        private readonly MovieAppDbContext _dbContext;
 
-        public ReviewRepositoryImpl(UserDbContext dbContext)
+        public ReviewRepositoryImpl(MovieAppDbContext dbContext)
         {
             _dbContext = dbContext;
         }

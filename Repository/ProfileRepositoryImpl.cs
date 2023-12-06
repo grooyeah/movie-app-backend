@@ -7,13 +7,12 @@ namespace Repository
 {
     public class ProfileRepositoryImpl : IProfileRepository
     {
-        private readonly UserDbContext _dbContext;
+        private readonly MovieAppDbContext _dbContext;
 
-        public ProfileRepositoryImpl(UserDbContext dbContext)
+        public ProfileRepositoryImpl(MovieAppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
-
         public async Task<bool> CreateProfileAsync(Profile profile)
         {
             var profileToAdd = profile;
@@ -21,9 +20,9 @@ namespace Repository
             await _dbContext.AddAsync(profile);
             await _dbContext.SaveChangesAsync();
 
-            var existingProfile = GetProfileByIdAsync(profile.ProfileId);
+            var existingProfile = GetProfileByUserIdAsync(profile.UserId);
 
-            if(existingProfile == null)
+            if (existingProfile == null)
             {
                 return false;
             }
@@ -31,44 +30,11 @@ namespace Repository
             return true;
         }
 
-        public async Task<bool> DeleteProfileAsync(string profileId)
+        public async Task<Profile> GetProfileByUserIdAsync(string userId)
         {
-            var profile = await GetProfileByIdAsync(profileId);
+            var existingProfile = await _dbContext.Profiles.SingleOrDefaultAsync(x => x.UserId == userId);
 
-            if (profile == null)
-            {
-                return false;
-            }
-            
-            _dbContext.Remove(profile);
-            await _dbContext.SaveChangesAsync();
-
-            var existingProfile = await GetProfileByIdAsync(profile.ProfileId);
-            
-            if(existingProfile == null)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public async Task<IEnumerable<Profile>> GetAllProfilesAsync()
-        {
-            var allExistingProfiles = await _dbContext.Profiles.ToListAsync();
-
-            if(!allExistingProfiles.Any())
-            {
-                return null;
-            }
-
-            return allExistingProfiles;
-        }
-
-        public async Task<Profile> GetProfileByIdAsync(string profileId)
-        {
-            var existingProfile = await _dbContext.Profiles.SingleOrDefaultAsync(x => x.ProfileId == profileId);
-
-            if(existingProfile == null)
+            if (existingProfile == null)
             {
                 return null;
             }
@@ -76,21 +42,43 @@ namespace Repository
             return existingProfile;
         }
 
-        public async Task<bool> UpdateProfileAsync(Profile profile)
+        public async Task<Profile> UpdateProfileAsync(Profile profile)
         {
             var profileToUpdate = profile;
 
             _dbContext.Profiles.Update(profile);
             await _dbContext.SaveChangesAsync();
 
-            var updatedProfile = await GetProfileByIdAsync(profileToUpdate.ProfileId);
+            var updatedProfile = await GetProfileByUserIdAsync(profileToUpdate.UserId);
             
             if(updatedProfile == null)
+            {
+                return null;
+            }
+
+            if(updatedProfile != profileToUpdate)
+            {
+                return null;
+            }
+
+            return updatedProfile;
+        }
+
+        public async Task<bool> DeleteProfileAsync(string userId)
+        {
+            var profile = await GetProfileByUserIdAsync(userId);
+
+            if (profile == null)
             {
                 return false;
             }
 
-            if(updatedProfile != profileToUpdate)
+            _dbContext.Remove(profile);
+            await _dbContext.SaveChangesAsync();
+
+            var existingProfile = await GetProfileByUserIdAsync(profile.UserId);
+
+            if (existingProfile == null)
             {
                 return false;
             }

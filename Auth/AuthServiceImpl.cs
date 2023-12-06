@@ -12,74 +12,86 @@ namespace Auth
 {
     public class AuthServiceImpl : IAuthService
     {
-        private readonly UserDbContext _dbContext;
+        private readonly MovieAppDbContext _dbContext;
         private readonly IConfiguration _configuration;
 
-        public AuthServiceImpl(UserDbContext userDbContext,IConfiguration configuration)
+        public AuthServiceImpl(MovieAppDbContext dbContext,IConfiguration configuration)
         {
-            _dbContext = userDbContext;
+            _dbContext = dbContext;
             _configuration = configuration;
         }
 
-        public async Task<User> LogOut(UserDto user)
+        public async Task<bool> LogOut(string userId)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == user.Username );
+            return await _dbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId) != null;
         }
 
-        public async Task<string> SignIn(string email, string password)
+        public async Task<string> Login(string username, string password)
         {
             //Add user password hashing and checking
 
-            var existingUser = await _dbContext.Profiles
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(x => x.User.Email == email);
+            var existingUser = await _dbContext.Users
+                .FirstOrDefaultAsync(x => x.Username == username);
 
             if(existingUser == null)
             {
                 return null;
             }
 
-            if (!VerifyPasswordHash(password, existingUser.User.PasswordHash, existingUser.User.PasswordSalt))
+            if (!VerifyPasswordHash(password, existingUser.PasswordHash, existingUser.PasswordSalt))
             {
                 return null;
             }
 
-            var token = CreateToken(existingUser.User);
+            var token = CreateToken(existingUser);
 
             return token;
         }
 
-        
-
-        public async Task<Profile> SignUp(ProfileDto profileDto)
+        public async Task<UserDto> SignUp(SignUpModel signUpModel)
         {
-            var existingUser = await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == profileDto.User.Email );
+            var existingUser = await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == signUpModel.Username);
+
             if (existingUser != null)
             {
                 return null;
             }
 
-            var profile = profileDto.ToProfile();
-            CreatePasswordHash(profileDto.User.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            profile.User.PasswordHash = passwordHash;
-            profile.User.PasswordSalt = passwordSalt;
-
-            profile.User.UserId = Guid.NewGuid().ToString();
-            profile.ProfileId = Guid.NewGuid().ToString();
-            foreach(var review in profile.Reviews)
+            var user = new User()
             {
-                review.ReviewId = Guid.NewGuid().ToString();
-                review.PublishedOn = DateTime.UtcNow;
-            }
-            await _dbContext.Users.AddAsync(profile.User);
+                Username = signUpModel.Username
+            };
+
+            CreatePasswordHash(signUpModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            user.UserId = Guid.NewGuid().ToString();
+
+            user.Email = signUpModel.Email;
+            
+            var profile = new Profile()
+            {
+                ProfileId = Guid.NewGuid().ToString(),
+                Reviews = new List<Review>(),
+                UserId = user.UserId,
+                Picture = "",
+                MovieLists = new List<MovieList>()
+            };
+
+            await _dbContext.Users.AddAsync(user);
             await _dbContext.Profiles.AddAsync(profile);
             await _dbContext.SaveChangesAsync();
-            var createdProfile = await _dbContext.Profiles.FirstOrDefaultAsync(x => profile.User.Username == x.User.Username);
-            if (createdProfile == null)
+
+            var createdUser = await _dbContext.Users.FirstOrDefaultAsync(x => user.UserId == x.UserId);
+
+            if (createdUser == null)
             {
                 return null;
             }
-            return createdProfile;
+
+            return createdUser.ToUserDto();
         }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)

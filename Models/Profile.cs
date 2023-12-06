@@ -6,17 +6,21 @@ namespace Models
     public class Profile
     {
         public string ProfileId { get; set; }
-        public User User { get; set; }
+        public string UserId { get; set; }
         public string Picture { get; set; }
-        public List<string> FavoriteMovies { get; set; }
+        public User User { get; set; }
+        public List<MovieList> MovieLists { get; set; }
         public List<Review> Reviews { get; set; }
 
-        public Profile(User user, string picture, List<string> favoriteMovies, List<Review> reviews)
+        public Profile(string profileId,string userId, string picture, 
+            List<MovieList> movieLists, List<Review> reviews, User user)
         {
-            User = user;
+            ProfileId = profileId;
+            UserId = userId;
             Picture = picture;
-            FavoriteMovies = favoriteMovies;
+            MovieLists = movieLists;
             Reviews = reviews;
+            User = user;
         }
 
         public Profile()
@@ -27,10 +31,11 @@ namespace Models
         {
             return new ProfileDto
             {
-                User = User.ToUserDto(),
+                ProfileId = ProfileId,
+                UserId = UserId,
                 Picture = Picture,
-                FavoriteMovies = FavoriteMovies,
-                Reviews = Reviews.Select(review => review.ToReviewDto()).ToList()
+                MovieLists = MovieLists,
+                Reviews = Reviews.Select(x => x.ToReviewDto()).ToList()
             };
         }
     }
