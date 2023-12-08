@@ -26,7 +26,7 @@ namespace Auth
             return await _dbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId) != null;
         }
 
-        public async Task<string> Login(string username, string password)
+        public async Task<UserDto> Login(string username, string password)
         {
             //Add user password hashing and checking
 
@@ -43,9 +43,9 @@ namespace Auth
                 return null;
             }
 
-            var token = CreateToken(existingUser);
+            //var token = CreateToken(existingUser);
 
-            return token;
+            return existingUser.ToUserDto();
         }
 
         public async Task<UserDto> SignUp(SignUpModel signUpModel)

@@ -7,7 +7,6 @@ namespace Controllers
 {
     [Route("/api/")]
     [ApiController]
-    [Authorize]
     public class ProfileController : ControllerBase
     {
         private readonly IProfileService _profileService;
