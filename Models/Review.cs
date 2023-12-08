@@ -13,7 +13,6 @@ namespace Models
         public int Rating { get; set; }
         public DateTime PublishedOn { get; set; }
         public string ProfileId { get; set; }
-        public Profile Profile { get; set; }
 
         public Review()
         {
@@ -21,7 +20,7 @@ namespace Models
 
         public Review(string reviewId, string imdbId,
             string authorName, string movieTitle, string reviewTitle,
-            string reviewText, int rating, DateTime publishedOn, string profileId, Profile profile)
+            string reviewText, int rating, DateTime publishedOn, string profileId)
         {
             ReviewId = reviewId;
             ImdbId = imdbId;
@@ -32,7 +31,6 @@ namespace Models
             Rating = rating;
             PublishedOn = publishedOn;
             ProfileId = profileId;
-            Profile = profile;
         }
 
         public ReviewDto ToReviewDto()

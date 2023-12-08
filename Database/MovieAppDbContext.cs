@@ -18,28 +18,6 @@ namespace Database
 
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            // User to Profile (One-to-One)
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Profile)
-                .WithOne(p => p.User)
-                .HasForeignKey<Profile>(p => p.UserId);
-
-            // Profile to Review (One-to-Many)
-            modelBuilder.Entity<Profile>()
-                .HasMany(p => p.Reviews)
-                .WithOne(r => r.Profile)
-                .HasForeignKey(r => r.ProfileId);
-
-            // Profile to MovieList (One-to-Many)
-            modelBuilder.Entity<Profile>()
-                .HasMany(p => p.MovieLists)
-                .WithOne(ml => ml.Profile)
-                .HasForeignKey(ml => ml.ProfileId);
-        }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=movie-app-db;Username=postgres;Password=postgres;",
