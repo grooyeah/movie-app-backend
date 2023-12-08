@@ -48,14 +48,23 @@ namespace Repository
             return updatedUser;
         }
 
-        public async Task<bool> DeleteUserAsync(User user)
+        public async Task<bool> DeleteUserAsync(string userId)
         {
-            var userToRemove = user;
-
-            _dbContext.Users.Remove(user);
+            var existingUser = await GetUserByIdAsync(userId);
+            if (existingUser == null)
+            {
+                return false;
+            }
+            var existingUserProfile = await _dbContext.Profiles.FirstOrDefaultAsync(x => x.UserId == userId);
+            var existingUserReviews = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.ProfileId == existingUserProfile.ProfileId);
+            var existingUserMovieList = await _dbContext.MovieLists.FirstOrDefaultAsync(x => x.ProfileId == existingUserProfile.ProfileId);
+            _dbContext.Users.Remove(existingUser);
+            _dbContext.Profiles.Remove(existingUserProfile);
+            _dbContext.Reviews.Remove(existingUserReviews);
+            _dbContext.MovieLists.Remove(existingUserMovieList);
             await _dbContext.SaveChangesAsync();
 
-            var exisintUser = await GetUserByIdAsync(user.UserId);
+            var exisintUser = await GetUserByIdAsync(userId);
             if(exisintUser == null)
             {
                 return true;

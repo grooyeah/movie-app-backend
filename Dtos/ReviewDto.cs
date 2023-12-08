@@ -13,15 +13,13 @@ namespace Dtos
         public int Rating { get; set; }
         public DateTime PublishedOn { get; set; }
         public string ProfileId { get; set; }
-        public Profile Profile { get; set; }
-
         public ReviewDto()
         {
         }
 
         public ReviewDto(string reviewId, string imdbId, 
             string authorName, string movieTitle, string reviewTitle,
-            string review, int rating, DateTime publishedOn, string profileId, Profile profile)
+            string review, int rating, DateTime publishedOn, string profileId)
         {
             ReviewId = reviewId;
             ImdbId = imdbId;
@@ -32,7 +30,6 @@ namespace Dtos
             Rating = rating;
             PublishedOn = publishedOn;
             ProfileId = profileId;
-            Profile = profile;
         }
 
         public Review ToReview()

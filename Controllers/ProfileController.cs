@@ -19,7 +19,7 @@ namespace Controllers
         }
 
         [HttpGet("profiles/{userId}")]
-        public async Task<IActionResult> GetProfileAsync([FromQuery] string userId)
+        public async Task<IActionResult> GetProfileByUserIdAsync(string userId)
         {
             var profile = await _profileService.GetProfileByUserIdAsync(userId);
 
@@ -47,7 +47,7 @@ namespace Controllers
         }
 
         [HttpDelete("profiles/{profileId}")]
-        public async Task<IActionResult> DeleteProfile([FromQuery] string profileId)
+        public async Task<IActionResult> DeleteProfile( string profileId)
         {
             var result = await _profileService.DeleteProfileAsync(profileId);
 

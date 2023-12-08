@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace movieappbackend.Migrations
 {
     [DbContext(typeof(MovieAppDbContext))]
-    [Migration("20231208152732_InitialCreate")]
+    [Migration("20231208160946_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -55,9 +55,6 @@ namespace movieappbackend.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("ProfileId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("Profiles");
                 });
@@ -132,35 +129,20 @@ namespace movieappbackend.Migrations
 
             modelBuilder.Entity("Models.MovieList", b =>
                 {
-                    b.HasOne("Models.Profile", "Profile")
+                    b.HasOne("Models.Profile", null)
                         .WithMany("MovieLists")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Profile");
-                });
-
-            modelBuilder.Entity("Models.Profile", b =>
-                {
-                    b.HasOne("Models.User", "User")
-                        .WithOne("Profile")
-                        .HasForeignKey("Models.Profile", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Models.Review", b =>
                 {
-                    b.HasOne("Models.Profile", "Profile")
+                    b.HasOne("Models.Profile", null)
                         .WithMany("Reviews")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Profile");
                 });
 
             modelBuilder.Entity("Models.Profile", b =>
@@ -168,12 +150,6 @@ namespace movieappbackend.Migrations
                     b.Navigation("MovieLists");
 
                     b.Navigation("Reviews");
-                });
-
-            modelBuilder.Entity("Models.User", b =>
-                {
-                    b.Navigation("Profile")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

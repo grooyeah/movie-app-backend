@@ -64,13 +64,13 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("users/{userId}")]
-    public async Task<IActionResult> DeleteUser(UserDto user)
+    public async Task<IActionResult> DeleteUser(string userId)
     {
-        var result = await _userService.DeleteUserAsync(user);
+        var result = await _userService.DeleteUserAsync(userId);
 
         if (!result)
         {
-            _logger.LogWarning($"Could not delete user {user.Username}. Service returned null.");
+            _logger.LogWarning($"Could not delete user {userId}. Service returned null.");
             return NotFound();
         }
 

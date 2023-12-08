@@ -7,17 +7,15 @@ namespace Dtos
         public string ProfileId { get; set; }
         public string UserId { get; set; }
         public string Picture { get; set; }
-        public User User { get; set; }
         public List<MovieList> MovieLists { get; set; }
         public List<ReviewDto> Reviews { get; set; }
 
-        public ProfileDto(string profileId,string userId, string picture, List<MovieList> movieLists, List<ReviewDto> reviews, User user)
+        public ProfileDto(string profileId,string userId, string picture, List<MovieList> movieLists, List<ReviewDto> reviews)
         {
             UserId = userId;
             Picture = picture;
             MovieLists = movieLists;
             Reviews = reviews;
-            User = user;
         }
 
         public ProfileDto()

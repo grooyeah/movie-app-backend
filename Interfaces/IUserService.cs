@@ -7,6 +7,6 @@ namespace Interfaces
     {
         Task<User> GetUserByIdAsync(string userId);
         Task<User> UpdateUserAsync(UserDto user);
-        Task<bool> DeleteUserAsync(UserDto user);
+        Task<bool> DeleteUserAsync(string userId);
     }
 }

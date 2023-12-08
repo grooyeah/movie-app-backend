@@ -32,9 +32,9 @@ namespace Services
             return result;
         }
 
-        public async Task<bool> DeleteUserAsync(UserDto user)
+        public async Task<bool> DeleteUserAsync(string userId)
         {
-           var result = await _userRepository.DeleteUserAsync(user.ToUser());
+           var result = await _userRepository.DeleteUserAsync(userId);
             return result;
         }
     }
