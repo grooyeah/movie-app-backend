@@ -42,7 +42,7 @@ namespace Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=db;Port=5432;Database=movie-app-db;Username=postgres;Password=postgres;",
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=movie-app-db;Username=postgres;Password=postgres;",
                 builder => builder.EnableRetryOnFailure(
                     maxRetryCount: 3,
                     maxRetryDelay: TimeSpan.FromSeconds(30),

@@ -9,7 +9,6 @@ namespace movie_app_backend.Controllers;
 
 [Route("/api/")]
 [ApiController]
-[Authorize]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -25,7 +24,6 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("users/signup")]
-    [AllowAnonymous]
     public async Task<IActionResult> SignUp([FromBody] SignUpModel signUpModel)
     {
         var createdUser = await _authService.SignUp(signUpModel);
@@ -48,7 +46,7 @@ public class UserController : ControllerBase
             return NotFound();
         }
 
-        return Ok(user);
+        return Ok(user.ToUserDto());
     }
 
     [HttpPut("users/{userId}")]
@@ -62,7 +60,7 @@ public class UserController : ControllerBase
             return NotFound();
         }
 
-        return Ok(updatedUser);
+        return Ok(updatedUser.ToUserDto());
     }
 
     [HttpDelete("users/{userId}")]

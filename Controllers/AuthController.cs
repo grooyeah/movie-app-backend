@@ -22,19 +22,18 @@ namespace Controllers
         [HttpPost("auth/login")]
         public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
         {
-            var token = await _authService.Login(loginModel.Username, loginModel.Password);
+            var existingUser = await _authService.Login(loginModel.Username, loginModel.Password);
 
-            if (token == null)
+            if (existingUser == null)
             {
                 _logger.LogWarning($"Could not find user with username {loginModel.Username}");
                 return NotFound("User could not be found.");
             }
 
-            return Ok(token);
+            return Ok(existingUser);
         }
 
         [HttpPost("auth/logout/{userId}")]
-        [Authorize]
         public async Task<IActionResult> Logout([FromQuery] string userId)
         {
             var result = await _authService.LogOut(userId);
