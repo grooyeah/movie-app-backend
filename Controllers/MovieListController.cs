@@ -51,7 +51,7 @@ public class MovieListController: ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateMovieList([FromBody] MovieList movieList)
+    public async Task<ActionResult<MovieList>> UpdateMovieList([FromBody] MovieList movieList)
     {
         try
         {
