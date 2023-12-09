@@ -8,9 +8,9 @@ namespace Repository
 {
     public class MovieListRepositoryImpl : IMovieListRepository
     {
-        private readonly UserDbContext _dbContext;
+        private readonly MovieAppDbContext _dbContext;
     
-        public MovieListRepositoryImpl(UserDbContext dbContext)
+        public MovieListRepositoryImpl(MovieAppDbContext dbContext)
         {
             _dbContext = dbContext;
         }

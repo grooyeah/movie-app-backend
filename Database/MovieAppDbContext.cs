@@ -12,16 +12,14 @@ namespace Database
         public DbSet<Review> Reviews { get; set; }
         public DbSet<MovieList> MovieLists { get; set; }
 
-<<<<<<<< HEAD:Database/UserDbContext.cs
-        public UserDbContext(DbContextOptions<UserDbContext> options)
-            : base(options)
-========
+
         public MovieAppDbContext(DbContextOptions<MovieAppDbContext> options)
-        : base(options)
->>>>>>>> 6d4f1ce99c1d53d1b6d14c11e87af23edf0d0aba:Database/MovieAppDbContext.cs
+            : base(options)
         {
 
         }
+
+  
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
