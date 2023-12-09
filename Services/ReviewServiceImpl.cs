@@ -5,26 +5,37 @@ namespace Services
 {
     public class ReviewServiceImpl : IReviewService
     {
-        private readonly IReviewRepository _reviewRepository;   
+        private readonly IReviewRepository _reviewRepository;
 
         public ReviewServiceImpl(IReviewRepository reviewRepository)
         {
             _reviewRepository = reviewRepository;
         }
 
-        public async Task CreateReviewAsync(Review review)
+        public async Task<Review> CreateReviewAsync(Review review)
         {
-            await _reviewRepository.CreateReviewAsync(review);
+            review.ReviewId = Guid.NewGuid().ToString();
+            return await _reviewRepository.CreateReviewAsync(review);
         }
 
-        public async Task DeleteReviewAsync(string reviewId)
+        public async Task<bool> DeleteReviewAsync(string reviewId)
         {
-            await _reviewRepository.DeleteReviewAsync(reviewId);
+            return await _reviewRepository.DeleteReviewAsync(reviewId);
         }
 
-        public async Task<IEnumerable<Review>> GetAllReviewsAsync()
+        public async Task<Review> UpdateReviewAsync(Review review)
+        {
+            return await _reviewRepository.UpdateReviewAsync(review);
+        }
+
+        public async Task<ICollection<Review>> GetAllReviewsAsync()
         {
             return await _reviewRepository.GetAllReviewsAsync();
+        }
+
+        public async Task<ICollection<Review>>  GetReviewByProfileIdAsync(string profileId)
+        {
+            return await _reviewRepository.GetReviewByProfileIdAsync(profileId);
         }
 
         public async Task<Review> GetReviewByIdAsync(string reviewId)
@@ -32,9 +43,24 @@ namespace Services
             return await _reviewRepository.GetReviewByIdAsync(reviewId);
         }
 
-        public async Task UpdateReviewAsync(Review review)
+        public async Task<ICollection<Review>> GetReviewsByMovieIdAsync(string imbdId)
         {
-            await _reviewRepository.UpdateReviewAsync(review);
+            return await _reviewRepository.GetReviewsByMovieIdAsync(imbdId);
+        }
+
+        public async Task<ICollection<Review>> GetTopReviewsAsync(string topReviewsCount, string imbdId)
+        {
+            return await _reviewRepository.GetTopReviewsAsync(topReviewsCount, imbdId);
+        }
+
+        public async Task<IEnumerable<string>> GetMostReviewedMoviesAsync(int topMoviesCount)
+        {
+            return await _reviewRepository.GetMostReviewedMoviesAsync(topMoviesCount);
+        }
+
+        public async Task<double> GetAverageRatingForMovieAsync(string imbdId)
+        {
+            return await _reviewRepository.GetAverageRatingForMovieAsync(imbdId);
         }
     }
 }

@@ -38,6 +38,8 @@ builder.Services.AddScoped<IUserService, UserServiceImpl>();
 builder.Services.AddScoped<IReviewService, ReviewServiceImpl>();
 builder.Services.AddScoped<IProfileService, ProfileServiceImpl>();
 builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
+builder.Services.AddScoped<IMovieListRepository, MovieListRepositoryImpl>();
+builder.Services.AddScoped<IMovieListService, MovieListServiceImpl>();
 
 // Add logging and other services as needed...
 
