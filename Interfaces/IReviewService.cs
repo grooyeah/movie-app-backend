@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using Dtos;
+using Models;
 
 namespace Interfaces
 {

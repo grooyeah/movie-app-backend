@@ -8,20 +8,20 @@ namespace Repository
 {
     public class MovieListRepositoryImpl : IMovieListRepository
     {
-        private readonly UserDbContext _dbContext;
+        private readonly MovieAppDbContext _dbContext;
     
-        public MovieListRepositoryImpl(UserDbContext dbContext)
+        public MovieListRepositoryImpl(MovieAppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
     
         public async Task<ICollection<MovieList>> GetMovieListByProfileIdAsync(string profileId)
         {
-            var movieList = await _dbContext.MovieLists.Where(m => m.ProfileId == profileId).ToListAsync();
+            var movieList = await _dbContext.MovieLists.Where(m => m.MProfileId == profileId).ToListAsync();
 
             if (movieList == null)
             {
-                throw new NotFoundException($"MovieList with ProfileId '{profileId}' not found.");
+                throw new NotFoundException($"MovieList with MProfileId '{profileId}' not found.");
             }
             
             return movieList;
@@ -37,11 +37,11 @@ namespace Repository
     
         public async Task<MovieList> UpdateMovieListAsync(MovieList movieList)
         {
-            var existingMovieList = await _dbContext.MovieLists.FirstOrDefaultAsync(m => m.ProfileId == movieList.ProfileId);
+            var existingMovieList = await _dbContext.MovieLists.FirstOrDefaultAsync(m => m.MProfileId == movieList.MProfileId);
     
             if (existingMovieList == null)
             {
-                throw new NotFoundException($"MovieList with ProfileId '{movieList.ProfileId}' not found.");
+                throw new NotFoundException($"MovieList with MProfileId '{movieList.MProfileId}' not found.");
             }
     
             _dbContext.MovieLists.Update(movieList);

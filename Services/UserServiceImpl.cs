@@ -1,4 +1,5 @@
-﻿using Interfaces;
+﻿using Dtos;
+using Interfaces;
 using Models;
 
 namespace Services
@@ -12,36 +13,29 @@ namespace Services
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
-        {
-            return await _userRepository.GetAllUsersAsync();
-        }
-
         public async Task<User> GetUserByIdAsync(string userId)
         {
             return await _userRepository.GetUserByIdAsync(userId);
         }
 
-        public async Task CreateUserAsync(User user)
+        public async Task<User> UpdateUserAsync(UserDto user)
         {
-            user.UserId = Guid.NewGuid().ToString();
-            await _userRepository.CreateUserAsync(user);
-        }
+            var userDb = await _userRepository.GetUserByIdAsync(user.ToUser().UserId);
 
-        public async Task UpdateUserAsync(User user)
-        {
-            var userDb = await _userRepository.GetUserByIdAsync(user.UserId);
-
-            if (userDb != null)
+            if (userDb == null)
             {
-                _userRepository.UpdateUserAsync(user);
+                return null;
             }
-            // Handle case where user is not found
+
+            var result = await _userRepository.UpdateUserAsync(user.ToUser());
+
+            return result;
         }
 
-        public async Task DeleteUserAsync(User user)
+        public async Task<bool> DeleteUserAsync(string userId)
         {
-            await _userRepository.DeleteUserAsync(user);
+           var result = await _userRepository.DeleteUserAsync(userId);
+            return result;
         }
     }
 }

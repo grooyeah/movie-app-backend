@@ -3,7 +3,7 @@
     public class Review
     {
         public string ReviewId { get; set; }
-        public string ProfileId { get; set; }
+        public string RProfileId { get; set; }
         public string ImdbID { get; set; }
         public string Author { get; set; }
         public string MovieTitle { get; set; }

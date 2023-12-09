@@ -12,29 +12,24 @@ namespace Services
             _profileRepository = profileRepository;
         }
 
-        public async Task CreateProfileAsync(Profile profile)
+        public async Task<bool> CreateProfileAsync(Profile profile)
         {
-            await _profileRepository.CreateProfileAsync(profile);
+            return await _profileRepository.CreateProfileAsync(profile);
         }
 
-        public async Task DeleteProfileAsync(string profileId)
+        public async Task<Profile> GetProfileByUserIdAsync(string userId)
         {
-            await _profileRepository.DeleteProfileAsync(profileId);
+            return await _profileRepository.GetProfileByUserIdAsync(userId);
         }
 
-        public async Task<IEnumerable<Profile>> GetAllProfilesAsync()
+        public async Task<Profile> UpdateProfileAsync(Profile profile)
         {
-            return await _profileRepository.GetAllProfilesAsync();
+            return await _profileRepository.UpdateProfileAsync(profile);
         }
 
-        public async Task<Profile> GetProfileByIdAsync(string profileId)
+        public async Task<bool> DeleteProfileAsync(string profileId)
         {
-            return await _profileRepository.GetProfileByIdAsync(profileId);
-        }
-
-        public async Task UpdateProfileAsync(Profile profile)
-        {
-            await _profileRepository.UpdateProfileAsync(profile);
+            return await _profileRepository.DeleteProfileAsync(profileId);
         }
     }
 }

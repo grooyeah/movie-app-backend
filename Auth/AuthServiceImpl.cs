@@ -1,50 +1,137 @@
 ﻿using Database;
+using Dtos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Auth
 {
     public class AuthServiceImpl : IAuthService
     {
-        private readonly UserDbContext _dbContext;
+        private readonly MovieAppDbContext _dbContext;
+        private readonly IConfiguration _configuration;
 
-        public AuthServiceImpl(UserDbContext userDbContext)
+        public AuthServiceImpl(MovieAppDbContext dbContext,IConfiguration configuration)
         {
-            _dbContext = userDbContext;
+            _dbContext = dbContext;
+            _configuration = configuration;
         }
 
-        public async Task<User> LogOut(User user)
+        public async Task<bool> LogOut(string userId)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == user.Username && x.Password == user.Password);
+            return await _dbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId) != null;
         }
 
-        public async Task<Profile> SignIn(User user)
+        public async Task<UserDto> Login(string username, string password)
         {
-            return await _dbContext.Profiles.FirstOrDefaultAsync(x => x.User.Username == user.Username && x.User.Password == user.Password);
+            //Add user password hashing and checking
+
+            var existingUser = await _dbContext.Users
+                .FirstOrDefaultAsync(x => x.Username == username);
+
+            if(existingUser == null)
+            {
+                return null;
+            }
+
+            if (!VerifyPasswordHash(password, existingUser.PasswordHash, existingUser.PasswordSalt))
+            {
+                return null;
+            }
+
+            //var token = CreateToken(existingUser);
+
+            return existingUser.ToUserDto();
         }
 
-        public async Task<Profile> SignUp(Profile profile)
+        public async Task<UserDto> SignUp(SignUpModel signUpModel)
         {
-            var existingUser = await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == profile.User.Email );
+            var existingUser = await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == signUpModel.Username);
+
             if (existingUser != null)
             {
                 return null;
             }
-            profile.User.UserId = Guid.NewGuid().ToString();
-            profile.ProfileId = Guid.NewGuid().ToString();
-            foreach(var review in profile.Reviews)
+
+            var user = new User()
             {
-                review.PublishedOn = DateTime.UtcNow;
-            }
-            await _dbContext.Users.AddAsync(profile.User);
+                Username = signUpModel.Username
+            };
+
+            CreatePasswordHash(signUpModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            user.UserId = Guid.NewGuid().ToString();
+
+            user.Email = signUpModel.Email;
+            
+            var profile = new Profile()
+            {
+                ProfileId = Guid.NewGuid().ToString(),
+                Reviews = new List<Review>(),
+                UserId = user.UserId,
+                Picture = "",
+                MovieLists = new List<MovieList>()
+            };
+
+            await _dbContext.Users.AddAsync(user);
             await _dbContext.Profiles.AddAsync(profile);
             await _dbContext.SaveChangesAsync();
-            var createdProfile = await _dbContext.Profiles.FirstOrDefaultAsync(x => profile.User.Username == x.User.Username);
-            if (createdProfile == null)
+
+            var createdUser = await _dbContext.Users.FirstOrDefaultAsync(x => user.UserId == x.UserId);
+
+            if (createdUser == null)
             {
                 return null;
             }
-            return createdProfile;
+
+            return createdUser.ToUserDto();
+        }
+
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using(var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+            }
+        }
+
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512(passwordSalt))
+            {
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(passwordHash);
+            }
+        }
+
+        private string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Username)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                _configuration.GetSection("AppSettings:Token").Value));
+
+            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: cred
+                );
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
         }
     }
 }

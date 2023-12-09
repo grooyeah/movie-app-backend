@@ -8,9 +8,9 @@ namespace Repository
 {
     public class ReviewRepositoryImpl : IReviewRepository
     {
-        private readonly UserDbContext _dbContext;
+        private readonly MovieAppDbContext _dbContext;
 
-        public ReviewRepositoryImpl(UserDbContext dbContext)
+        public ReviewRepositoryImpl(MovieAppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -43,12 +43,13 @@ namespace Repository
 
         public async Task<ICollection<Review>> GetAllReviewsAsync()
         {
-            return await _dbContext.Reviews.ToListAsync();
+            var allExistingReviews = await _dbContext.Reviews.ToListAsync();
+            return allExistingReviews;
         }
 
-        public async Task<ICollection<Review>>  GetReviewByProfileIdAsync(string profileId)
+        public async Task<ICollection<Review>> GetReviewByProfileIdAsync(string profileId)
         {
-            return await _dbContext.Reviews.Where(x => x.ProfileId == profileId).ToListAsync();
+            return await _dbContext.Reviews.Where(x => x.RProfileId == profileId).ToListAsync();
         }
 
         public async Task<Review> GetReviewByIdAsync(string reviewId)
