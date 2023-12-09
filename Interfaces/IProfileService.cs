@@ -5,9 +5,9 @@ namespace Interfaces
 {
     public interface IProfileService
 {
-        Task<bool> CreateProfileAsync(ProfileDto profile);
+        Task<bool> CreateProfileAsync(Profile profile);
         Task<bool> DeleteProfileAsync(string userId);
         Task<Profile> GetProfileByUserIdAsync(string userId);
-        Task<Profile> UpdateProfileAsync(ProfileDto profile);
+        Task<Profile> UpdateProfileAsync(Profile profile);
     }
 }

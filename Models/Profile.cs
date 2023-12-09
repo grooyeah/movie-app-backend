@@ -25,16 +25,6 @@ namespace Models
         {
         }
 
-        public ProfileDto ToProfileDto()
-        {
-            return new ProfileDto
-            {
-                ProfileId = ProfileId,
-                UserId = UserId,
-                Picture = Picture,
-                MovieLists = MovieLists,
-                Reviews = Reviews.Select(x => x.ToReviewDto()).ToList()
-            };
-        }
+       
     }
 }

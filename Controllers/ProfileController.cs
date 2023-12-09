@@ -2,6 +2,7 @@
 using Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 
 namespace Controllers
 {
@@ -33,7 +34,7 @@ namespace Controllers
         }
 
         [HttpPost("profiles/{profileId}")]
-        public async Task<IActionResult> UpdateProfile([FromBody] ProfileDto profile)
+        public async Task<IActionResult> UpdateProfile([FromBody] Profile profile)
         {
             var profileUpdated = await _profileService.UpdateProfileAsync(profile);
 
