@@ -28,7 +28,7 @@ public class ReviewController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<ActionResult<Review>>  UpdateReview([FromBody] Review review)
+    public async Task<ActionResult<Review>> UpdateReview([FromBody] Review review)
     {
         if (!ModelState.IsValid)
         {
@@ -62,7 +62,7 @@ public class ReviewController : ControllerBase
 
     [HttpGet]
     [Route("profile/{profileId}")]
-    public async Task<ActionResult<Review>>  GetReviewByProfileId(string profileId)
+    public async Task<ActionResult<Review>> GetReviewByProfileId(string profileId)
     {
         var review = await _reviewService.GetReviewByProfileIdAsync(profileId);
         return Ok(review);
@@ -70,7 +70,7 @@ public class ReviewController : ControllerBase
 
     [HttpGet]
     [Route("{reviewId}")]
-    public async Task<IActionResult> GetReviewById(string reviewId)
+    public async Task<ActionResult<Review>> GetReviewById(string reviewId)
     {
         var review = await _reviewService.GetReviewByIdAsync(reviewId);
         return Ok(review);
