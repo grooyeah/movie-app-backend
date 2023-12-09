@@ -56,8 +56,8 @@ namespace Repository
                 return false;
             }
             var existingUserProfile = await _dbContext.Profiles.FirstOrDefaultAsync(x => x.UserId == userId);
-            var existingUserReviews = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.ProfileId == existingUserProfile.ProfileId);
-            var existingUserMovieList = await _dbContext.MovieLists.FirstOrDefaultAsync(x => x.ProfileId == existingUserProfile.ProfileId);
+            var existingUserReviews = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.RProfileId == existingUserProfile.ProfileId);
+            var existingUserMovieList = await _dbContext.MovieLists.FirstOrDefaultAsync(x => x.MProfileId == existingUserProfile.ProfileId);
             _dbContext.Users.Remove(existingUser);
             _dbContext.Profiles.Remove(existingUserProfile);
             _dbContext.Reviews.Remove(existingUserReviews);
