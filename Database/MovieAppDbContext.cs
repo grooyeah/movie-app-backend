@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
-using Polly;
-using System.Data.Common;
 
 namespace Database
 {
@@ -11,19 +9,15 @@ namespace Database
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<MovieList> MovieLists { get; set; }
-
-
-        public MovieAppDbContext(DbContextOptions<MovieAppDbContext> options)
-            : base(options)
+        
+        public MovieAppDbContext(DbContextOptions<MovieAppDbContext> options) : base(options)
         {
 
         }
 
-  
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=db;Port=5432;Database=movie-app-db;Username=postgres;Password=postgres;",
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=movie-app-db;Username=postgres;Password=postgres;",
                 builder => builder.EnableRetryOnFailure(
                     maxRetryCount: 3,
                     maxRetryDelay: TimeSpan.FromSeconds(30),
@@ -38,20 +32,25 @@ namespace Database
             modelBuilder.Entity<Profile>().HasKey(profile => profile.ProfileId);
             modelBuilder.Entity<Review>().HasKey(review => review.ReviewId);
             modelBuilder.Entity<MovieList>().HasKey(movieList => movieList.MovieListId);
-            
+
+            ConfigureForeignKeys(modelBuilder);
+
+            base.OnModelCreating(modelBuilder);
+        }
+
+        private static void ConfigureForeignKeys(ModelBuilder modelBuilder)
+        {
             modelBuilder.Entity<Review>()
-                .HasOne<Profile>() // Assuming Profile is the name of the entity with ProfileId
+                .HasOne<Profile>() // Assuming Profile is the name of the entity with MProfileId
                 .WithMany()
-                .HasForeignKey(r => r.ProfileId) // Explicitly specify the foreign key property
+                .HasForeignKey(r => r.RProfileId) // Explicitly specify the foreign key property
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<MovieList>()
-                .HasOne<Profile>() // Assuming Profile is the name of the entity with ProfileId
+                .HasOne<Profile>() // Assuming Profile is the name of the entity with MProfileId
                 .WithMany()
-                .HasForeignKey(ml => ml.ProfileId) // Explicitly specify the foreign key property
+                .HasForeignKey(ml => ml.MProfileId) // Explicitly specify the foreign key property
                 .OnDelete(DeleteBehavior.Restrict);
-
-            base.OnModelCreating(modelBuilder);
         }
     }
 }

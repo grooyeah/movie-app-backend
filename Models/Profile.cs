@@ -1,7 +1,4 @@
-﻿using Dtos;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
-
-namespace Models
+﻿namespace Models
 {
     public class Profile
     {

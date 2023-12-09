@@ -1,6 +1,4 @@
-﻿using Dtos;
-using Interfaces;
-using Microsoft.AspNetCore.Authorization;
+﻿using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 

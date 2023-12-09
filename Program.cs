@@ -5,10 +5,6 @@ using Repository;
 using Services;
 using Microsoft.OpenApi.Models;
 using Auth;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
