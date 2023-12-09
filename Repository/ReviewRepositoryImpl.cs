@@ -34,6 +34,8 @@ namespace Repository
 
         public async Task<Review> UpdateReviewAsync(Review review)
         {
+            var existingReview = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.ReviewId == review.ReviewId);
+            if (existingReview == null) throw new NotFoundException($"Review with ID {review.ReviewId} not found");
             _dbContext.Reviews.Update(review);
             await _dbContext.SaveChangesAsync();
             return review;

@@ -16,7 +16,7 @@ public class ReviewController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateReview([FromBody] Review review)
+    public async Task<ActionResult<Review>> CreateReview([FromBody] Review review)
     {
         if (!ModelState.IsValid)
         {
@@ -28,7 +28,7 @@ public class ReviewController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateReview([FromBody] Review review)
+    public async Task<ActionResult<Review>>  UpdateReview([FromBody] Review review)
     {
         if (!ModelState.IsValid)
         {
@@ -36,10 +36,6 @@ public class ReviewController : ControllerBase
         }
 
         var updatedReview = await _reviewService.UpdateReviewAsync(review);
-        if (updatedReview == null)
-        {
-            return NotFound();
-        }
 
         return Ok(updatedReview);
     }
@@ -58,7 +54,7 @@ public class ReviewController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetAllReviews()
+    public async Task<ActionResult<ICollection<Review>>>GetAllReviews()
     {
         var reviews = await _reviewService.GetAllReviewsAsync();
         return Ok(reviews);
@@ -66,14 +62,9 @@ public class ReviewController : ControllerBase
 
     [HttpGet]
     [Route("profile/{profileId}")]
-    public async Task<IActionResult> GetReviewByProfileId(string profileId)
+    public async Task<ActionResult<Review>>  GetReviewByProfileId(string profileId)
     {
         var review = await _reviewService.GetReviewByProfileIdAsync(profileId);
-        if (review == null)
-        {
-            return NotFound();
-        }
-
         return Ok(review);
     }
 
@@ -82,17 +73,12 @@ public class ReviewController : ControllerBase
     public async Task<IActionResult> GetReviewById(string reviewId)
     {
         var review = await _reviewService.GetReviewByIdAsync(reviewId);
-        if (review == null)
-        {
-            return NotFound();
-        }
-
         return Ok(review);
     }
 
     [HttpGet]
     [Route("movie/{imdbId}")]
-    public async Task<IActionResult> GetReviewsByMovieId(string imdbId)
+    public async Task<ActionResult<ICollection<Review>>> GetReviewsByMovieId(string imdbId)
     {
         var reviews = await _reviewService.GetReviewsByMovieIdAsync(imdbId);
         return Ok(reviews);
@@ -100,7 +86,7 @@ public class ReviewController : ControllerBase
 
     [HttpGet]
     [Route("top/{topReviewsCount}/movie/{imdbId}")]
-    public async Task<IActionResult> GetTopReviews(string topReviewsCount, string imdbId)
+    public async Task<ActionResult<ICollection<Review>>> GetTopReviews(string topReviewsCount, string imdbId)
     {
         var reviews = await _reviewService.GetTopReviewsAsync(topReviewsCount, imdbId);
         return Ok(reviews);
@@ -108,7 +94,7 @@ public class ReviewController : ControllerBase
 
     [HttpGet]
     [Route("most-reviewed/{topMoviesCount:int}")]
-    public async Task<IActionResult> GetMostReviewedMovies(int topMoviesCount)
+    public async Task<ActionResult<ICollection<Review>>> GetMostReviewedMovies(int topMoviesCount)
     {
         var movies = await _reviewService.GetMostReviewedMoviesAsync(topMoviesCount);
         return Ok(movies);
@@ -116,7 +102,7 @@ public class ReviewController : ControllerBase
 
     [HttpGet]
     [Route("average-rating/movie/{imdbId}")]
-    public async Task<IActionResult> GetAverageRatingForMovie(string imdbId)
+    public async Task<ActionResult<double>> GetAverageRatingForMovie(string imdbId)
     {
         var averageRating = await _reviewService.GetAverageRatingForMovieAsync(imdbId);
         return Ok(averageRating);

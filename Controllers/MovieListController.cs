@@ -23,11 +23,6 @@ public class MovieListController: ControllerBase
         try
         {
             var movieList = await _movieListService.GetMovieListByProfileIdAsync(profileId);
-            if (movieList == null)
-            {
-                return NotFound();
-            }
-
             return Ok(movieList);
         }
         catch (Exception e)

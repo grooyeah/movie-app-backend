@@ -17,7 +17,14 @@ namespace Repository
     
         public async Task<ICollection<MovieList>> GetMovieListByProfileIdAsync(string profileId)
         {
-            return await _dbContext.MovieLists.Where(m => m.ProfileId == profileId).ToListAsync();
+            var movieList = await _dbContext.MovieLists.Where(m => m.ProfileId == profileId).ToListAsync();
+
+            if (movieList == null)
+            {
+                throw new NotFoundException($"MovieList with ProfileId '{profileId}' not found.");
+            }
+            
+            return movieList;
         }
     
         public async Task<MovieList> CreateMovieListAsync(MovieList movieList)
@@ -37,9 +44,7 @@ namespace Repository
                 throw new NotFoundException($"MovieList with ProfileId '{movieList.ProfileId}' not found.");
             }
     
-            existingMovieList.ListName = movieList.ListName;
-            existingMovieList.ListDescription = movieList.ListDescription;
-            existingMovieList.ImbdIds = movieList.ImbdIds;
+            _dbContext.MovieLists.Update(movieList);
     
             await _dbContext.SaveChangesAsync();
     
