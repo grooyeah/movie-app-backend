@@ -29,7 +29,7 @@ namespace Repository
     
         public async Task<MovieList> CreateMovieListAsync(MovieList movieList)
         {
-            _dbContext.MovieLists.Add(movieList);
+            await _dbContext.MovieLists.AddAsync(movieList);
             await _dbContext.SaveChangesAsync();
     
             return movieList;
