@@ -25,7 +25,7 @@ namespace Controllers
             if (existingUser == null)
             {
                 _logger.LogWarning($"Could not find user with username {loginModel.Username}");
-                return NotFound("User could not be found.");
+                return BadRequest("User could not be found.");
             }
 
             return Ok(existingUser);
@@ -38,8 +38,8 @@ namespace Controllers
 
             if (!result)
             {
-                _logger.LogWarning($"Could log out user. user not found");
-                return NoContent();
+                _logger.LogWarning($"Could not log out user. User with id {userId} not found.");
+                return BadRequest($"Could not log out user. User not found.");
             }
 
             return Ok("Logged out successfully.");

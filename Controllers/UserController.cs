@@ -28,10 +28,10 @@ public class UserController : ControllerBase
         var createdUser = await _authService.SignUp(signUpModel);
         if (createdUser == null)
         {
-            _logger.LogWarning($"Could not create user.");
-            return NotFound("User could not be found.");
+            _logger.LogWarning($"Could not create user : {signUpModel.Username}.");
+            return BadRequest("User could not be created.");
         }
-        return Ok(createdUser);
+        return Created("User created successfuly",createdUser);
     }
 
     [HttpGet("users/{userId}")]
@@ -42,7 +42,7 @@ public class UserController : ControllerBase
         if (user == null)
         {
             _logger.LogWarning($"Could not retrieve user with id {userId}. Service returned null.");
-            return NotFound();
+            return BadRequest("Could not retrieve user with passed id.");
         }
 
         return Ok(user.ToUserDto());
@@ -56,7 +56,7 @@ public class UserController : ControllerBase
         if(updatedUser == null)
         {
             _logger.LogWarning($"Could not update user {userToUpdate.Username}. Service returned null.");
-            return NotFound();
+            return BadRequest("Could not update user with passed id.");
         }
 
         return Ok(updatedUser);
@@ -70,7 +70,7 @@ public class UserController : ControllerBase
         if (!result)
         {
             _logger.LogWarning($"Could not delete user {userId}. Service returned null.");
-            return NotFound();
+            return BadRequest("Could not delete user with passed id.");
         }
 
         return Ok("User deleted successfully!");
