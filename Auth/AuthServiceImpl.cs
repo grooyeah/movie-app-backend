@@ -30,7 +30,7 @@ namespace Auth
         {
             //Add user password hashing and checking
 
-            var existingUser = await _dbContext.Users
+            var existingUser = await _dbContext.Users.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Username == username);
 
             if(existingUser == null)
@@ -43,7 +43,7 @@ namespace Auth
                 return null;
             }
 
-            //var token = CreateToken(existingUser);
+            _dbContext.Users.Entry(existingUser).State = EntityState.Detached;
 
             return existingUser.ToUserDto();
         }
@@ -80,8 +80,36 @@ namespace Auth
                 MovieLists = new List<MovieList>()
             };
 
+            var profileEmtpyReview = new Review()
+            {
+                ReviewId = Guid.NewGuid().ToString(),
+                RProfileId = profile.ProfileId,
+                ImdbID = "tt0993846",
+                Author = user.Username,
+                MovieTitle = "The Wolf of Wall Street",
+                ReviewText = "Favorite Movie",
+                Rating = 5,
+                PublishedOn = DateTime.UtcNow,
+                ReviewTitle = "Review Title"
+            };
+
+            var profileEmptyMovieList = new MovieList()
+            {
+                MovieListId = Guid.NewGuid().ToString(),
+                MProfileId = profile.ProfileId,
+                ListName = "New list",
+                ListDescription = "New list",
+                ImbdIds = new List<string>()
+            };
+
+            profile.Reviews.Add(profileEmtpyReview);
+            profile.MovieLists.Add(profileEmptyMovieList);
+
             await _dbContext.Users.AddAsync(user);
             await _dbContext.Profiles.AddAsync(profile);
+            await _dbContext.Reviews.AddAsync(profileEmtpyReview);
+            await _dbContext.MovieLists.AddAsync(profileEmptyMovieList);
+
             await _dbContext.SaveChangesAsync();
 
             var createdUser = await _dbContext.Users.FirstOrDefaultAsync(x => user.UserId == x.UserId);

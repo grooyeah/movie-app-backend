@@ -34,11 +34,17 @@ namespace Repository
 
         public async Task<Review> UpdateReviewAsync(Review review)
         {
-            var existingReview = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.ReviewId == review.ReviewId);
-            if (existingReview == null) throw new NotFoundException($"Review with ID {review.ReviewId} not found");
-            _dbContext.Reviews.Update(review);
+            var reviewToUpdate = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.ReviewId == review.ReviewId);
+            if (reviewToUpdate == null) throw new NotFoundException($"Review with ID {review.ReviewId} not found");
+
+            reviewToUpdate.Author = review.Author;
+            reviewToUpdate.ReviewText = review.ReviewText;
+            reviewToUpdate.MovieTitle = review.MovieTitle;
+            reviewToUpdate.PublishedOn = review.PublishedOn;
+
             await _dbContext.SaveChangesAsync();
-            return review;
+
+            return reviewToUpdate;
         }
 
         public async Task<ICollection<Review>> GetAllReviewsAsync()

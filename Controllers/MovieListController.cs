@@ -5,8 +5,8 @@ using movie_app_backend.Exceptions;
 
 namespace movie_app_backend.Controllers;
 
+[Route("/api/")]
 [ApiController]
-[Route("[controller]")]
 public class MovieListController: ControllerBase
 {
     private readonly IMovieListService _movieListService;
@@ -16,8 +16,7 @@ public class MovieListController: ControllerBase
         _movieListService = movieListService;
     }
 
-    [HttpGet]
-    [Route("{profileId}")]
+    [HttpGet("movielist/{profileId}")]
     public async Task<ActionResult<ICollection<MovieList>>> GetMovieListByProfileId(string profileId)
     {
         try
@@ -31,7 +30,7 @@ public class MovieListController: ControllerBase
         }
     }
 
-    [HttpPost]
+    [HttpPost("movielist")]
     public async Task<ActionResult<MovieList>> CreateMovieList([FromBody] MovieList movieList)
     {
         try
@@ -50,7 +49,7 @@ public class MovieListController: ControllerBase
         }
     }
 
-    [HttpPut]
+    [HttpPut("movielist")]
     public async Task<ActionResult<MovieList>> UpdateMovieList([FromBody] MovieList movieList)
     {
         try
@@ -69,7 +68,7 @@ public class MovieListController: ControllerBase
         }
     }
 
-    [HttpDelete]
+    [HttpDelete("movielist")]
     public async Task<IActionResult> DeleteMovieList(string movieListId)
     {
         try
@@ -88,8 +87,7 @@ public class MovieListController: ControllerBase
         }
     }
 
-    [HttpPost]
-    [Route("{movieListId}/movies/{imbdId}")]
+    [HttpPost("movielist/{movieListId}/movies/{imbdId}")]
     public async Task<IActionResult> AddMovieToMovieList(string movieListId, string imbdId)
     {
         try
@@ -103,8 +101,7 @@ public class MovieListController: ControllerBase
         }
     }
 
-    [HttpDelete]
-    [Route("{movieListId}/movies/{imbdId}")]
+    [HttpDelete("movielist/{movieListId}/movies/{imbdId}")]
     public async Task<IActionResult> RemoveMovieFromMovieList(string movieListId, string imbdId)
     {
         try

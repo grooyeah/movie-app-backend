@@ -36,14 +36,14 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddDbContext<MovieAppDbContext>(options =>
 {
-    options.UseNpgsql("Host=localhost;Port=5432;Database=movie-app-db;Username=postgres;Password=postgres;",
+    options.UseNpgsql("Host=db;Port=5432;Database=movie-app-db;Username=postgres;Password=postgres;",
         builder => builder.EnableRetryOnFailure(
             maxRetryCount: 3,
             maxRetryDelay: TimeSpan.FromSeconds(30),
             errorCodesToAdd: null
         )
     );
-});
+}, ServiceLifetime.Scoped);
 
 builder.Services.AddScoped<IUserRepository, UserRepositoryImpl>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepositoryImpl>();

@@ -6,7 +6,7 @@ namespace Interfaces
     public interface IUserService
     {
         Task<User> GetUserByIdAsync(string userId);
-        Task<User> UpdateUserAsync(UserDto user);
+        Task<UserDto> UpdateUserAsync(UserDto user);
         Task<bool> DeleteUserAsync(string userId);
     }
 }

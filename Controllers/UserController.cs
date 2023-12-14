@@ -59,7 +59,7 @@ public class UserController : ControllerBase
             return NotFound();
         }
 
-        return Ok(updatedUser.ToUserDto());
+        return Ok(updatedUser);
     }
 
     [HttpDelete("users/{userId}")]
