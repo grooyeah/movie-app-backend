@@ -37,18 +37,20 @@ namespace Repository
     
         public async Task<MovieList> UpdateMovieListAsync(MovieList movieList)
         {
-            var existingMovieList = await _dbContext.MovieLists.FirstOrDefaultAsync(m => m.MProfileId == movieList.MProfileId);
+            var movieListToUpdate = await _dbContext.MovieLists.FirstOrDefaultAsync(m => m.MProfileId == movieList.MProfileId);
     
-            if (existingMovieList == null)
+            if (movieListToUpdate == null)
             {
                 throw new NotFoundException($"MovieList with MProfileId '{movieList.MProfileId}' not found.");
             }
-    
-            _dbContext.MovieLists.Update(movieList);
-    
+
+            movieListToUpdate.ListName = movieList.ListName;
+            movieListToUpdate.ListDescription = movieList.ListDescription;
+            movieListToUpdate.ImbdIds = movieList.ImbdIds;
+
             await _dbContext.SaveChangesAsync();
     
-            return existingMovieList;
+            return movieListToUpdate;
         }
     
         public async Task<bool> DeleteMovieListAsync(string movieListId)
