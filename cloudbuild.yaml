@@ -1,0 +1,10 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/earnest-setup-389219/backend-image', '.']
+spec:
+  steps:
+    - name: docker-build
+      image: docker
+      command: ['docker', 'build', '-t', 'my-image:latest', '.']
+  artifacts:
+    - image: gcr.io/earnest-setup-389219/my-image:latest
