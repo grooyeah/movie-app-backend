@@ -23,8 +23,8 @@ services:
     depends_on:
       - db
     environment:
-      - ConnectionStrings:DefaultConnection=Host=db;Port=5432;Database=movie-app-db;Username=postgres;Password=postgres
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/movie-app-db
+      - ConnectionStrings:DefaultConnection=Host=34.38.201.129;Database=postgres;Username=postgres;Password=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://34.38.201.129:5432/postgres
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
