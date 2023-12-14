@@ -4,12 +4,10 @@ services:
     image: "postgres:15.2-alpine"
     restart: always
     container_name: postgresql-container
-    ports:
-      - 5432:5432
     volumes:
       - db:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=movie-app-db
+      - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
