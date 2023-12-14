@@ -18,7 +18,7 @@ namespace Services
             return await _userRepository.GetUserByIdAsync(userId);
         }
 
-        public async Task<User> UpdateUserAsync(UserDto user)
+        public async Task<UserDto> UpdateUserAsync(UserDto user)
         {
             var userDb = await _userRepository.GetUserByIdAsync(user.ToUser().UserId);
 
@@ -27,7 +27,7 @@ namespace Services
                 return null;
             }
 
-            var result = await _userRepository.UpdateUserAsync(user.ToUser());
+            var result = await _userRepository.UpdateUserAsync(user);
 
             return result;
         }

@@ -1,11 +1,12 @@
-﻿using Models;
+﻿using Dtos;
+using Models;
 
 namespace Interfaces
 {
     public interface IUserRepository
     {
         Task<User> GetUserByIdAsync(string userId);
-        Task<User> UpdateUserAsync(User user);
+        Task<UserDto> UpdateUserAsync(UserDto user);
         Task<bool> DeleteUserAsync(string userId);
     }
 }
