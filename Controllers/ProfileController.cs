@@ -25,7 +25,7 @@ namespace Controllers
             if (profile == null)
             {
                 _logger.LogWarning($"Could not retrieve profile with id {userId}. Service returned null.");
-                return NotFound();
+                return BadRequest("Could not retrieve profile.");
             }
 
             return Ok(profile);
@@ -39,7 +39,7 @@ namespace Controllers
             if (profileUpdated == null)
             {
                 _logger.LogWarning($"Could not update profile {profile.UserId}. Service returned null.");
-                return NotFound();
+                return BadRequest("Could not update profile.");
             }
 
             return Ok(profileUpdated);
@@ -53,7 +53,7 @@ namespace Controllers
             if (!result)
             {
                 _logger.LogWarning($"Could not delete profile {profileId}. Service returned null.");
-                return NotFound();
+                return BadRequest("Could not delete profile.");
             }
 
             return Ok(result);
